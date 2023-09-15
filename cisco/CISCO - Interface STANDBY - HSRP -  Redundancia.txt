@@ -1,0 +1,26 @@
+Interface STANDBY
+http://www.cisco.com/cisco/web/support/BR/104/1045/1045517_6.html
+
+É utilizada para redundância de roteadores pelo protocolo HSRP.
+Permite definir um ip standby para interfaces de roteadores distintos a fim de que
+eles verifiquem quem possui maior prioridade e assuma o ip virtual como ativo.
+
+#### IPV4 #### 
+Device(config)# interface Ethernet 0/0 
+Device(config-if)# ip address 171.16.6.5 255.255.255.0 ->ip local da interface
+
+Device(config-if)# standby 1 ip 171.16.6.100 -> 1 é o grupo standby e o ip 171.16... é o virtual
+
+Device(config-if)# standby 1 priority 105 -> (OPCIONAL) Defini a prioridade
+
+Device(config-if)# standby 1 preempt -> (OPCIONAL) Define o tipo de standby 
+
+#### IPV6 ####
+Device(config)# interface GigabitEthernet 0/0/0
+Device(config-if)# standby version 2
+Device(config-if)# standby 1 ipv6 autoconfig
+Device(config-if)# standby 1 preempt (OPCIONAL) Define o tipo de standby 
+Device(config-if)# standby 1 priority 110 (OPCIONAL) Defini a prioridade
+
+
+

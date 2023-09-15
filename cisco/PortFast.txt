@@ -1,0 +1,8 @@
+Ativa em todas as insterfaces
+
+Switch(config)# spanning-tree portfast default
+
+
+Atia em uma porta somente
+
+Switch(config-if)# spanning-tree portfast

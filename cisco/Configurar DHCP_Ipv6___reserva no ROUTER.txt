@@ -1,0 +1,23 @@
+********** Configuração de DHCP no Router com IPV6 **********
+
+Primeiro criaremos o "pool". E logo apos acrescentamos o "netID".
+router(config)#ipv6 dhcp pool teste
+router(config-dhcpv6)#address prefix fdab:cdef:7::/64
+router(config-dhcpv6)#dns-server fdab:cdef:3::2
+router(config-dhcpv6)#exit
+router(config)#do wr
+
+
+********** Configurar reserva de ip no ROUTER **********
+
+router(config)#ip dhcp pool publico
+router(dhcp-config)#network 1.1.1.64 255.255.255.192
+router(dhcp-config)#default-router 1.1.1.65
+router(dhcp-config)#exit
+
+router(config)#ip dhcp pool reserva_pc1
+router(dhcp-config)#host 1.1.1.126 255.255.255.192
+router(dhcp-config)#hardware-address 0800.27bc.2770    ---> MAC da maquina.
+router(dhcp-config)#exit
+Os endereços IPs reservados automaticamente são retirados do pool de distribuição.
+

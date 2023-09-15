@@ -1,0 +1,16 @@
+Etapa 1. 
+
+conf t -> int dot11 Radio 0
+(config-if)#ssid olimpiada
+(config-ssid)#exit
+(config-if)#encryption mode ciphers aes-ccm
+(config-if)#no shut
+(config-if)#exit
+
+
+(config)#dot11 ssid olimpiada
+(config-ssid)#guest-mode
+(config-ssid)#authentication open
+(config-ssid)#authentication key-management wpa version 2
+(config-ssid)#wpa-psk ascii 5 <senha>
+

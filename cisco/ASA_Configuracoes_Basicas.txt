@@ -1,0 +1,61 @@
+!Configurações ASA:
+enable
+
+
+conf t
+
+!Interfece OUTSIDE:
+interface gig 0/0
+nameif outside
+no shutdown
+ip address dhcp
+exit
+
+!Interfece INSIDE:
+interface gig 0/1
+nameif inside
+no shutdown
+ip address 192.168.10.1 255.255.255.0
+exit
+
+!DHCP:
+
+dhcpd address 192.168.10.10-192.168.10.100 inside
+dhcpd dns 8.8.8.8 interface inside
+dhcpd enable inside
+
+!Interface de Gerenciamento
+interface management 0/0
+ip address 192.168.1.1 255.255.255.0
+nameif management
+no shutdown
+exit
+!DHCP
+dhcpd address 192.168.1.10-192.168.1.20 management
+dhcpd dns 8.8.8.8 interface management
+dhcpd enable management
+
+!Configuração WEB
+http server enable
+http 192.168.1.0 255.255.255.0 management
+http 192.168.10.0 255.255.255.0 inside
+
+!Criar usuario Administrador
+username admin password senai privilege 15
+
+!ACL
+access-list outside_access_in extended permit ip any any
+access-list inside_access_in extended permit ip any any
+access-group outside_access_in in interface outside
+access-group inside_access_in in interface inside
+!ou para liberar tudo de uma vez utilizar os dois comandos abaixo
+!access-list global_access extended permit ip any any
+!access-group global_access global
+
+
+
+!NAT
+object network INSIDE
+subnet 192.168.10.0 255.255.255.0
+nat (INSIDE,OUTSIDE) dynamic interface
+exit

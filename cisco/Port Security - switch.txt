@@ -1,0 +1,33 @@
+
+Int fa0/x
+
+
+Habilitar Port Security
+
+(conf-if)#switchport mode access
+(conf-if)#switchport port-security
+
+Configurar endereços permitidos
+manualmente
+
+switch(conf-if)#switchport port-security mac-address xxx.xxx.xxx 
+
+automaticamente todos PCs conectados ao switch
+
+switch(conf-if)# switchport port security mac-address sticky
+
+
+Definir o que fazer caso nao seja aquele MAC
+
+switch(config-if)#switchport port-security violation shutdown|restrict|protect
+
+
+Shutdown - ação padrão, onde manda logs e SNMP de mac errado, descarta tráfego e desativa a interface
+
+Restrict - descarta todo o trafego e manda log e SNMP ao administrador
+
+Protect - protege descartando todo o trafego que vem daquela porta.
+
+
+Analisar port-security
+show port-security

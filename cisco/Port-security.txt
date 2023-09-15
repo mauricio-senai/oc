@@ -1,0 +1,13 @@
+Port security
+2 interfaces dinamicas
+int fa0/4
+switchport port-security 
+switchport port-security violation shutdown
+switchport port-security maximun 2
+switchport port-security mac-adress stick
+
+
+
+hqswi1(config)#errdisable recovery cause psecure-violation
+hqswi1(config)#errdisable recovery interval 30 recupera a interface depois de 30 seg
+

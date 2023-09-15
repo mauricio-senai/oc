@@ -1,0 +1,1 @@
+int range fa0/3-5,fa0/7-8

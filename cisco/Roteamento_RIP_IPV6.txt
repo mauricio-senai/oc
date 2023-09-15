@@ -1,0 +1,16 @@
+********** Configurar roteamento rip com IPV6 **********
+
+!Habilitar o Roteamento RIP IPV6
+router(config)#ipv6 unicast-routing
+!Criar um grupo rip - neste caso com o nome de "teste"
+router(config)#ipv6 router rip teste
+router(config-rtr)#exit
+
+!
+router(config)#interface fastEthernet 0/0
+!Habilitar rip nesta interface no grupo "teste"
+router(config-if)#ipv6 rip teste enable
+router(config-if)#exit
+
+!Lembrar de Salvar
+router(config)#do wr

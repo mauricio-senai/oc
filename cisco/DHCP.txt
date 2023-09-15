@@ -1,0 +1,30 @@
+ip dhcp pool nome_do_DHCP (ex: Vlan 100)
+ip domain-name (dominio)
+
+network (ip_netid) (mascara)
+dns-server (ip do DNS)
+default-router (Ip_gateway que vai er o ip do router)
+ip DHCP excluded (ip) (até ip)
+
+
+
+
+Encaminhar soluções DHCP. Ex: um computador numa rede e o servidor DHCP em outra. O cliente pede DHCP via broadcast, mas o broadcast nao passa do rtoeador, por isso o comando abaixo, que vai transformar o broadcast em unicast pro servidor DHCP.
+
+
+
+Router#conf t
+brainworks(conf t)# int fa0/1 -> interface conectada aos clientes
+brainworks(conf t)# ip helper-address 192.168.1.10 (ip do servidor DHCP)
+
+
+
+
+
+
+Outro exemplo
+2 vlans conectadas num switch que é conectado no roteador, terá roteamento entre vlans, com subinterface no roteador e no outro lado do roteador o servidor DHCP com 2 escopos DHCP pra cada vlan.
+Em cada subinterface do roteador bota o ip helper-address pra direciona pro Ip de cada DHCP especifico.
+
+Tanto linux quanto windows tem que ter interface virtual para criar superescopos (mais de um escopo DHCP)
+

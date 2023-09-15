@@ -1,0 +1,34 @@
+Liberar imap4
+
+object network imap-server
+host 192.168.10.2
+nat (dmz,outside) static interface service tcp imap4 imap4
+access-list imap permit tcp any object imap-server eq imap4
+access-group imap4 in interface outside
+
+Liberar pop3
+
+object network pop3-server
+host 192.168.10.2
+nat (dmz,outside) static interface service tcp pop3 pop3
+access-list imap permit tcp any object imap-server eq pop3
+access-group pop3 in interface outside
+
+######################################################
+http://www.cisco.com/c/en/us/td/docs/security/asa/asa84/configuration/guide/asa_84_cli_config/nat_objects.html#wp1455942
+
+Examples
+
+O exemplo a seguir configura NAT estático para o host real 10.1.1.1 no interior para 10.2.2.2 no exterior com reescrita DNS habilitado.
+
+ hostname(config)# object network my-host-obj1
+ hostname(config-network-object)# host 10.1.1.1
+ hostname(config-network-object)# nat (inside,outside) static 10.2.2.2 dns  (10.2.2.2 é um IP externo que será criado automaticamente para o PAT)
+-------------------------------------------------
+O exemplo a seguir configura NAT-com-port-tradução estática para 10.1.1.1 na porta TCP 21 à interface externa na porta 2121.
+
+ hostname(config)# object network my-ftp-server
+ hostname(config-network-object)# host 10.1.1.1
+ hostname(config-network-object)# nat (inside,outside) static interface service tcp 21 2121
+
+-------------------------------------------------

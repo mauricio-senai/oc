@@ -1,0 +1,95 @@
+http://www.firewall.cx/cisco-technical-knowledgebase/cisco-routers/867-cisco-router-site-to-site-ipsec-vpn.html
+
+
+
+### Topologia ###
+
+	fa0/0 192.168.0.0/24	R1 ---Internet--- R2	fa0/0 172.16.0.0/24
+
+	IP Publico R1				Ip Pulbico R2
+
+	int se 0/0/0 10.0.0.1			int se0/0/1 10.0.0.2
+
+
+##############################################################################
+
+COnfiguração R1:
+
+R1(config)# crypto isakmp policy 1
+R1(config-isakmp)# encr 3des
+R1(config-isakmp)# hash md5
+R1(config-isakmp)# authentication pre-share
+R1(config-isakmp)# group 2
+R1(config-isakmp)# lifetime 86400
+R1(config-isakmp)# exit
+
+R1(config)# crypto isakmp key (senha) address 10.0.0.2 (senha em comum no R1 e R1) (ip do outro roteador)
+R1(config)# ip access-list extended VPN-TRAFFIC
+R1(config-ext-nacl)# permit ip 192.168.0.0 0.0.0.255 172.16.0.0 0.0.0.255
+ 
+R1(config)# crypto ipsec transform-set TS esp-3des esp-md5-hmac
+R1(config)# exit
+
+R1(config)# crypto map CMAP 10 ipsec-isakmp
+R1(config-crypto-map)# set peer 10.0.0.2
+R1(config-crypto-map)# set transform-set TS
+R1(config-crypto-map)# match address VPN-TRAFFIC
+R1(config-crypto-map)#Exit
+R1(config)# interface serial0/0/0
+R1(config- if)# crypto map CMAP
+
+
+
+Configuração R2:
+
+R2(config)# crypto isakmp policy 1
+R2(config-isakmp)# encr 3des
+R2(config-isakmp)# hash md5
+R2(config-isakmp)# authentication pre-share
+R2(config-isakmp)# group 2
+R2(config-isakmp)# lifetime 86400
+R2(config-isakmp)# exit
+
+R2(config)# crypto isakmp key (senha) address 10.0.0.1 (ip do outro roteador)
+R2(config)# ip access-list extended VPN-TRAFFIC
+R2(config-ext-nacl)# permit ip 172.16.0.0 0.0.0.255 192.168.0.0 0.0.0.255
+R2(config-ext-nacl)# exit
+
+R2(config)# crypto ipsec transform-set TS esp-3des esp-md5-hmac
+R2(config)# exit
+R2(config)# crypto map CMAP 10 ipsec-isakmp
+R2(config-crypto-map)# set peer 10.0.0.1
+R2(config-crypto-map)# set transform-set TS
+R2(config-crypto-map)# match address VPN-TRAFFIC
+
+R2(config)# interface serial0/0/1
+R2(config- if)# crypto map CMAP
+
+
+
+### TESTE ###
+
+R1# ping 172.16.0.1 source serial0/0/0
+R1# show crypto session
+
+
+
+
+#### NAT #####
+
+For Site 1’s router:
+
+R1(config)# ip nat inside source list 100 interface serial0/0/0 overload
+R1(config)# access-list 100 remark -=[Define NAT Service]=-
+R1(config)# access-list 100 deny ip 10.0.0.0 0.0.0.255 10.0.0.2 0.0.0.255
+R1(config)# access-list 100 permit ip 10.0.0.0 0.0.0.255 any
+R1(config)# access-list 100 remark
+
+
+And Site 2’s router:
+
+R2(config)# ip nat inside source list 100 interface fastethernet0/1 overload
+R2(config)# access-list 100 remark -=[Define NAT Service]=-
+R2(config)# access-list 100 deny ip 20.20.20.0 0.0.0.255 10.10.10.0  0.0.0.255
+R2(config)# access-list 100 permit ip 20.20.20.0 0.0.0.255 any
+R2(config)# access-list 100 remark

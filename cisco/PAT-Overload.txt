@@ -1,0 +1,50 @@
+--Criar access-list para cada rede interna
+access-list 2 permit 10.1.0.0 0.0.0.255
+access-list 3 permit 10.2.0.0 0.0.0.255
+access-list 4 permit 10.3.0.0 0.0.0.255
+
+--Configurar o nat para cada lista individualizada
+ip nat inside source list 2 interface serial 0/0/0 overload
+ip nat inside source list 3 interface serial 0/0/0 overload
+ip nat inside source list 4 interface serial 0/0/0 overload
+
+
+#########################################################
+Definição:
+
+Configurando PAT em roteadores Cisco (NAT sobrecarga)
+
+ 
+PAT (Port Address Translation) é, de longe, a implementação mais comum de NAT, e se você tem um roteador ADSL em casa há uma chance de 100% que você está usando.
+
+PAT ou também conhecido como sobrecarga de NAT, permite traduzir endereços IP em um método-to-one muitos. 
+No meu post anterior sobre Configurando NAT dinâmico, vimos que podemos NAT muitos-para-muitos, mas este foi limitado pela quantidade de endereços públicos que você tem disponível. Em casos como casa ADSL, o seu ISP só irá emitir um único endereço IP público, mas você pode ter 2 ou mais dispositivos que precisam acessar a Internet a qualquer momento. Este é o lugar onde PAT assume e torna tudo isso possível.
+
+Como acontece com qualquer configuração do NAT é preciso primeiro definir nossas interfaces dentro e fora. Neste exemplo eu vou usar FastEthernet 0/0 como meu interior, e Serial 0 como meu exterior.
+
+AOIP.ORG (config) # interface FastEthernet 0/0 
+AOIP.ORG (config-if) # ip nat inside 
+AOIP.ORG (config-if) # Interface Serial 0 
+AOIP.ORG (config-if) # ip nat outside
+
+O próximo passo é definir quais endereços na minha rede interna eu quero permitir a ser traduzido. Vamos supor que minha faixa de endereços IP dentro é 10.0.1.0 / 24
+
+AOIP.ORG (config) # access-list 1 permit 10.0.1.0 0.0.0.255 (Usando uma lista de acesso padrão é a maneira mais fácil de conseguir isso)
+
+Então eu preciso para configurar o endereço que será utilizado pelos meus endereços IP internos para acessar a interface externa. Isto pode ser feito de 2 maneiras.
+
+Opção 1:
+Se eu tiver apenas um endereço IP público, que é o caso com casa ADSL, o roteador já terá o endereço IP que lhe foi atribuído pelo seu ISP. A única coisa que posso fazer é dizer ao roteador para compartilhar esse endereço com meus anfitriões internos.
+
+AOIP.ORG (config) # ip nat inside source lista 1 Serial 0 sobrecarga (Isso define a minha access-list 1 como os endereços de origem, e dizer-lhes para ser traduzido para o mesmo endereço IP que está configurado no Serial 0. O comando sobrecarga informa ao roteador que ele precisa para manter o controle de todas as portas de origem e de destino para que o endereço IP pode ser usado várias vezes, sobrecarregado)
+
+Opção 2:
+Se eu tiver um segundo endereço IP público que eu gostaria de usar para navegar na Internet, posso configurar o PAT para esse endereço IP.
+
+AOIP.ORG (config) # ip nat inside source lista uma sobrecarga 192.168.1.1 (O mesmo que o comando acima, mas eu disse especificamente que o roteador endereço IP de traduzir meus anfitriões internos em)
+
+Esta opção é fantástico se você tiver vários endereços públicos e pretende segmentar a sua navegação na Internet com base em departamentos ou localizações geográficas. Por exemplo marketing - 10.1.0.0 / 24 Vendas - 10.2.0.0 / 24 Técnicas - 10.3.0.0 / 24
+
+
+
+Eu posso ter cada um dos departamentos acima usando seu próprio endereço IP público, o que tornará os arquivos de log mais fácil de ler quando o controle de uso da Internet e de erros de conexão de solução de problemas.

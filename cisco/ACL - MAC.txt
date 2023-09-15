@@ -1,0 +1,2 @@
+Router(config)# mac address-table static 0050.3e8d.6400 interface fast 0/0 vlan 100 drop
+

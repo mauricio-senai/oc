@@ -1,0 +1,13 @@
+Restaurar a configuração padrão de fábrica
+
+Para restaurar a configuração padrão de fábrica, digite o seguinte comando:
+
+hostname(config)# configure factory-default [ip_address [mask]]
+
+
+
+
+
+
+http://www.cisco.com/c/en/us/td/docs/security/asa/asa72/configuration/guide/conf_gd/start.html
+http://www.cisco.com/c/en/us/td/docs/security/asa/asa82/configuration/guide/config/start.html

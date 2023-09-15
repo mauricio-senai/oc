@@ -1,0 +1,84 @@
+http://mrdoro.com/tag/ikev2/
+http://mrdoro.com/2013/10/09/cisco-asa-vpn-with-ikev2-part-1/
+http://mrdoro.com/2013/10/10/cisco-asa-vpn-site-to-site-with-ikev2-and-router-part-2/
+
+
+Configuração de um tunnel VPN utilizando o AnyConnect
+
+- Roteador cisco
+
+- NAT 
+- ip  nat inside e outside nas interfaces
+- ACL do nat tem que ter os deny das redes que participarão da  VPN IPSEC
+
+- ACL das redes
+
+
+crypto isakmp policy 10
+hash sha
+encryption aes 256
+authentication pre-share
+lifetime 86400
+group 5
+exit
+
+crypto isakmp key 0 Oc@2014RS address 90.27.83.18 no-xauth
+crypto isakmp keepalive 10 3 (acredito que seja opcional)
+crypto ipsec isakmp transform-set TS esp-aes 256 esp-sha-hmac
+crypto ipsec df-bit clear-df
+crypto security-association lifetime seconds 28000
+crypto map CMAP 1 ipsec-isakmp
+set peer 90.27.83.18 
+set transform-set TS
+match-address ACL
+reverse-route
+set pfs group5 
+
+Interface gi0/0
+crypto map CMAP
+
+
+
+---------------------------------------------------------------------------------------
+
+-ASA FIREWALL
+-Fazer o nat object any
+
+-Criar object-groups
+
+Object-group network inside
+network 192.168.0.0 255.255.255.0
+Object-group network otherside
+network 172.16.0.0 255.255.255.0
+nat (inside,outside) source static inside inside destination static otherside otherside
+
+-ACL
+access-list VPN-IP Extended permit ip 172.16.128.0 255.255.254.0 192.168.10.0 255.255.255.0
+access-list VPN-IP Extended permit icmp 172.16.128.0 255.255.254.0 192.168.10.0 255.255.255.0
+
+
+HQSEC1(config)# crypto ikev1 policy 10
+HQSEC1(config-ikev1-policy)# hash sha
+HQSEC1(config-ikev1-policy)# group 2
+HQSEC1(config-ikev1-policy)# encryption aes-256
+HQSEC1(config-ikev1-policy)# authentication pre-share
+HQSEC1(config-ikev1-policy)# lifetime 86400
+
+
+tunnel-group 90.27.83.17 type ipsec-l2l
+tunnel group 90.27.83.17 ipsec-attributes
+ikev1 key Oc@2014#
+crypto ikev1 enable outside
+
+crypto isakmp disconect-notify
+crypto ipsec ikev1 transform-set TS aes-esp-256 aes-sha-hmac
+crypto ipsec df-bit clear-df outside 
+
+crypto map cmap 1 match address vpn-ip (acl)
+crypto map CMAP 1 set ikev1 transform-set ESP-aes256
+crypto map CMAP 1 set reverse-route
+crypto map CMAP 1 set security-association lifetime seconds 28000
+crypto map CMAP 1 set pfs group5
+crypto map CMAP interface outside
+
+- Habilitar roteamento nos 2 lados indicando todas as redes

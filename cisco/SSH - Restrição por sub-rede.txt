@@ -1,0 +1,9 @@
+Router(config)#access-list 23 permit 10.10.10.0 0.0.0.255
+Router(config)#line vty 5 15
+Router(config-line)#transport input ssh
+Router(config-line)#access-class 23 in
+Router(config-line)#exit
+
+
+
+http://www.cisco.com/c/en/us/support/docs/security-vpn/secure-shell-ssh/4145-ssh.html#restrictssh

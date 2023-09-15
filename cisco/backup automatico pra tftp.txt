@@ -1,0 +1,10 @@
+- botar ip na vlan pra se comunicar com servidor TFTP
+- Testar se o servidor tftp ta funcionando com o copy running-config tftp:
+
+configurar o archive
+
+#conf t
+(conf-t)# archive
+(conf-archive)# path tftp://ip_servidor/nome-arquivo        //Variaveis $h pra hostname e -t pra time, ele sempre 							 	   //ira preencher no final um -1, -2, -3
+(conf-archive)#write-memory		//Salva automatico o backup sempre que der write ou copy run start
+(conf-archive)#time-period numero_minutos	//Faixa de tempo pra ele salvar automatico independente do user

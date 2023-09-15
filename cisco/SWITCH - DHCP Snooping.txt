@@ -1,0 +1,38 @@
+A feature DHCP Snooping permite a proteção da rede contra Servidores DHCP não autorizados.
+
+Com o DHCP Snooping configurado, o Switch inspeciona as mensagens DHCP entre uma máquina cliente e servidor
+com a troca das mensagens: DHCP Discover, DHCP Offer, DHCP Request e o DHCP Ack
+
+--------------- Configurar o serviço de snooping no switch ------------------------------
+ip dhcp snooping
+! Habilitando o processo globalmente
+ip dhcp snooping vlan 20
+!Habilitando o dhcp snooping na vlan 20
+
+---------------- Configurar a interface ligada ao servidor DHCP -------------------------
+Switch#conf t
+Switch(config)#interface GigabitEthernet1/8
+Switch(config-if)#ip dhcp snooping trust
+
+
+------------------ Listar as configurações -----------------------------------------------
+
+Switch# show ip dhcp snooping binding
+MacAddress          IpAddress        Lease(sec)  Type           VLAN  Interface
+------------------  ---------------  ----------  -------------  ----  --------------------
+00:FF:16:89:E6:88   192.168.20.2     86250       dhcp-snooping   10    GigabitEthernet1/12
+
+Switch# show ip dhcp snooping
+Switch DHCP snooping is enabled
+DHCP snooping is configured on following VLANs:
+20
+DHCP snooping is configured on the following Interfaces:
+Insertion of option 82 is enabled
+   circuit-id format: vlan-mod-port
+    remote-id format: MAC
+Option 82 on untrusted port is not allowed
+Verification of hwaddr field is enabled
+Interface                    Trusted     Rate limit (pps)
+------------------------     -------     ----------------
+GigabitEthernet 1/8          yes         unlimited
+GigabitEthernet 1/12         no          unlimited

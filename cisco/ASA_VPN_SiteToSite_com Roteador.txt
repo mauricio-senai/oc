@@ -1,0 +1,179 @@
+!Configurações ASA:
+enable
+!
+conf t
+!
+!Interfece OUTSIDE:
+interface gig 0/0
+nameif outside
+no shutdown
+ip address 10.0.0.1
+exit
+!
+!Interfece INSIDE:
+interface gig 0/1
+nameif inside
+no shutdown
+ip address 192.168.10.1 255.255.255.0
+exit
+!
+!DHCP:
+!
+dhcpd address 192.168.10.10-192.168.10.100 inside
+dhcpd dns 192.168.10.10 interface inside
+dhcpd enable inside
+!
+!Interface de Gerenciamento
+interface management 0/0
+ip address 192.168.1.1 255.255.255.0
+nameif management
+no shutdown
+exit
+!DHCP
+dhcpd address 192.168.1.10-192.168.1.20 management
+dhcpd dns 192.168.10.10 interface management
+dhcpd enable management
+!
+!Configuração WEB
+http server enable
+http 192.168.1.0 255.255.255.0 management
+http 192.168.10.0 255.255.255.0 inside
+!
+!Criar usuario Administrador
+username senai password senai privilege 15
+!
+!ACL
+access-list outside_access_in extended permit ip any any
+access-list inside_access_in extended permit ip any any
+access-group outside_access_in in interface outside
+access-group inside_access_in in interface inside
+!ou para liberar tudo de uma vez utilizar os dois comandos abaixo
+!access-list global_access extended permit ip any any
+!access-group global_access global
+
+!NAT
+!object network INSIDE
+!subnet 192.168.10.0 255.255.255.0
+!nat (INSIDE,OUTSIDE) dynamic interface
+!exit
+!
+crypto ikev1 policy 10
+ authentication pre-share
+ encryption aes
+ hash sha
+ group 2
+ lifetime 86400
+ exit
+!
+crypto ikev1 enable outside
+tunnel-group 10.0.0.2 type ipsec-l2l
+tunnel-group 10.0.0.2 ipsec-attributes
+ ikev1 pre-shared-key cisco123
+ exit
+!
+object-group network local-network
+ network-object 192.168.10.0 255.255.255.0
+ exit
+!
+object-group network remote-network
+ network-object 192.168.20.0 255.255.255.0
+ exit
+!
+access-list asa-router-vpn extended permit ip object-group local-network object-group remote-network
+!
+nat (inside,outside) source static local-network local-network destination static remote-network remote-network no-proxy-arp route-lookup
+!
+crypto ipsec ikev1 transform-set ESP-AES-SHA esp-aes esp-sha-hmac
+crypto map outside_map 10 match address asa-router-vpn
+crypto map outside_map 10 set peer 10.0.0.2
+crypto map outside_map 10 set ikev1 transform-set ESP-AES-SHA
+!
+crypto map outside_map interface outside
+!
+route outside 192.168.20.0 255.255.255.0 10.0.0.2
+!
+!
+!
+!
+
+######################
+######################
+Configuracao Roteador
+######################
+######################
+interface et 0/0
+ ip address 10.0.0.2 255.255.255.0
+ ip nat outside
+ ip virtual-reassembly in
+ crypto map outside_map
+ no shutdown
+ exit
+!
+interface et 0/1
+ ip address 192.168.20.1 255.255.255.0
+ ip nat inside
+ ip virtual-reassembly in
+ no shutdown 
+ exit
+!
+!ip nat inside source list 1 interface et 0/0 overload
+!
+!access-list 1 permit 192.168.20.0 0.0.0.255
+!
+ip dhcp excluded-address 192.168.20.1 192.168.20.9
+!
+ip dhcp pool REDE
+ network 192.168.20.0 255.255.255.0
+ default-router 192.168.20.1
+! dns-server 192.168.10.10
+ exit
+!
+!
+crypto isakmp policy 10
+ encr aes
+ authentication pre-share
+ group 2
+exit
+!
+crypto isakmp key cisco123 address 10.0.0.1
+!
+access-list 110 remark Interesting traffic access-list
+access-list 110 permit ip 192.168.20.0 0.0.0.255 192.168.10.0 0.0.0.255
+!
+access-list 111 remark NAT exemption access-list
+access-list 111 deny   ip 192.168.20.0 0.0.0.255 192.168.10.0 0.0.0.255
+access-list 111 permit ip 192.168.20.0 0.0.0.255 any
+!
+route-map nonat permit 10
+ match ip address 111
+exit
+!
+ip nat inside source route-map nonat interface et0/0 overload
+!
+crypto ipsec transform-set ESP-AES-SHA esp-aes esp-sha-hmac
+ mode tunnel
+exit
+!
+crypto map outside_map 10 ipsec-isakmp
+ set peer 10.0.0.1
+ set transform-set ESP-AES-SHA
+ match address 110
+exit
+!
+interface et0/0
+ crypto map outside_map
+exit
+!
+interface et0/0
+ ip nat outside
+ ip virtual-reassembly in
+ crypto map outside_map
+exit
+!
+interface et0/1
+ ip nat inside
+ ip virtual-reassembly in
+exit
+!
+ip route 192.168.10.0 255.255.255.0 10.0.0.1
+!

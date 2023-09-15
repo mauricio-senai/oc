@@ -1,0 +1,9 @@
+conf t
+no cdp run
+
+
+
+ou desabilitar em portas especificas
+
+int fa0/0
+no cdp enable

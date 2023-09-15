@@ -1,0 +1,3 @@
+Para desbloquear basta digitar **#
+
+Para resetar digita **#**

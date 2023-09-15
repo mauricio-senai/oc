@@ -1,0 +1,22 @@
+indentificar a rede de fora
+ex:
+int fa0/0
+ip nat outside
+
+identificar redes internas
+Exs:
+int se0/0/0
+ip nat inside
+
+int se0/0/1
+ip nat inside
+
+
+
+
+Este tipo de nat é feito pra um host de fora acessar um host ou serviço especifico de uma rede local
+(pode ser porta 80, 443, UDP 53 pro dns)
+R1(config)#ip nat inside source static tcp/udp Ip_de_dentro portaserviçopermitido ip_de_fora mesmaporta
+
+PARA O DNS
+R1(config)#ip nat inside source static udp Ip_de_dentro portaServiçoPermitido ip_de_fora mesmaPorta extendable no-payload

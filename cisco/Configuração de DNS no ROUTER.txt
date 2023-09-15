@@ -1,0 +1,13 @@
+********** Configuração de DNS no Roteador **********
+
+!Primeiro devemos ativar o serviço de DNS e pesquisa de dominio.
+router(config)#ip dns server
+!Ativar a solução de nomes local(já ativado por padrão)
+router(config)#ip domain-lookup
+
+!Consultar outros DNS(Redirecionar Consultas = Forwarder).
+router(config)#ip name-server 1.1.1.65
+
+!Configurar o Servidor DNS com os nomes de host da rede local.
+router(config)#ip host www.skills.com 1.1.1.126
+router(config)#ip host skills.com 1.1.1.126

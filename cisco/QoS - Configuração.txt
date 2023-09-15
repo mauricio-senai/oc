@@ -1,0 +1,58 @@
+***********************Configuraçao de QoS***********************
+
+ 		      configuração no switch
+Switch>en
+switch#conf t
+switch(config)# mls qos  //ativar QoS globalmente.
+switch(config)# interface fastEthernet 0/2  //Em todas as interfaces.
+switch(config-if)# mls qos trust dscp //ativar QoS na inteface.
+switch(config-if)#exit
+switch#show mls qos interfaces // ver as interfaces. 
+
+
+		       Configuração no Router
+router>en
+router#conf t
+router(config)#access-list 100 permit udp any any range 16384 32000  //São portas de acesso VoIP.
+router(config)#access-list 100 permit tcp any any eq 1720 // Porta de H.323 - controle de sinal de chamada.
+router(config)#access-list 101 permit tcp any any eq 80 // Porta da WEB.
+router(config)#access-list 102 permit tcp any any eq 23 //Porta Telnet.
+
+router(config)#class-map voip
+router(config-cmap)#match access-group 100
+router(config-cmap)#exit
+router(config)#class-map data1
+router(config-cmap)#match access-group 101
+router(config-cmap)#exit
+router(config)#class-map data2
+router(config-cmap)#match access-group 102
+router(config-cmap)#exit
+
+router(config)#policy-map llq
+router(config-pmap)#class voip
+router(config-pmap-c)#police rate percent 25 // porcentagem de banda.
+router(config-pmap-c-police)#conform-action transmit
+router(config-pmap-c-police)#exceed-action drop
+router(config-pmap-c-police)#exit
+router(config-pmap-c)#exit
+router(config-pmap)#class data1
+router(config-pmap-c)police rate percent 15
+router(config-pmap-c-police)#conform-action transmit
+router(config-pmap-c-police)#exceed-action drop
+router(config-pmap-c-police)#exit
+router(config-pmap-c)#exit
+router(config-pmap)#class data2
+router(config-pmap-c)police rate percent 5
+router(config-pmap-c-police)#conform-action transmit
+router(config-pmap-c-police)#exceed-action drop
+router(config-pmap-c-police)#exit
+router(config-pmap-c)#exit
+router(config-pmap)#class class-default
+router(config-pmap-c)#fair-queue
+router(config-pmap-c)#exit
+router(config-pmap)#exit
+
+router(config)#interface GigabitEthernet 0/0
+router(config-if)#service-policy output llq
+
+

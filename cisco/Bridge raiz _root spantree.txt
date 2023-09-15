@@ -1,0 +1,34 @@
+# Forum
+# https://supportforums.cisco.com/t5/lan-switching-and-routing/best-way-to-set-root-bridge/td-p/2529430
+1-
+spanning-tree vlan 1, 10, 100,200,300,400,555 root primary
+2-
+spanning-tree vlan 1, 10, 100,200,300,400,555 priority 4096 .> by specifying priority value.
+
+################################################
+# Cisco - Completo
+# https://www.cisco.com/c/pt_br/support/docs/lan-switching/spanning-tree-protocol/5234-5.html
+
+Switch-15> (enable)set spantree root 1
+VLAN 1 bridge priority set to 8192.
+VLAN 1 bridge max aging time set to 20.
+VLAN 1 bridge hello time set to 2.
+VLAN 1 bridge forward delay set to 15.
+Switch is now the root switch for active VLAN 1.
+Switch-15> (enable) 
+
+A versão mais curta do comando tem o mesmo efeito, pois este exemplo mostra:
+Switch-15> (enable)set spantree root 1,200-204 
+VLANs 1,200-204 bridge priority set to 8189.
+VLANs 1,200-204 bridge max aging time set to 20.
+VLANs 1,200-204 bridge hello time set to 2.
+VLANs 1,200-204 bridge forward delay set to 15.
+Switch is now the root switch for active VLANs 1,200-204.
+Switch-15> (enable)
+
+O comando do set spantree priority fornece um terceiro método para especificar o switch-raiz:
+Switch-15> (enable)set spantree priority 8192 1
+Spantree 1 bridge priority set to 8192.
+Switch-15> (enable)
+
+Switch-15> (enable)show spantree 1

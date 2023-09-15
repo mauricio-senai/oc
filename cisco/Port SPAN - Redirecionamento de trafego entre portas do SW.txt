@@ -1,0 +1,13 @@
+Este exemplo mostra como configurar uma sessão SPAN (sessão 1) para monitorar o tráfego de porta de origem para uma porta de destino.
+Em primeiro lugar, qualquer configuração SPAN existente para a sessão 1 é limpa e, em seguida, o tráfego bidirecional é espelhada de porta de origem fastEthernet0/1 a porta de destino fastEthernet0/10 : 
+
+! Limpar as regras
+Switch(config)# no monitor session 1
+
+! Criar a replicação dos dados da porta fa0/1 para a porta fa 0/10
+Switch(config)# monitor session 1 source interface fastEthernet0/1
+Switch(config)# monitor session 1 destination interface fastEthernet0/10 encapsulation dot1q
+Switch(config)# end
+
+Tutorial Completo:
+https://supportforums.cisco.com/document/13891/how-configure-port-monitoring-span-catalyst-2940-2950-2955-2970-3550-or-3750-series

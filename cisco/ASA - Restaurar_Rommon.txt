@@ -1,0 +1,25 @@
+rommon>
+...
+address 10.200.119.250
+server 10.200.117.152
+file asa842-k8.bin
+tftpdnld
+
+
+int vlan 1
+ip address dhcp
+nameif inside
+exit
+
+
+interface ethernet 0/1
+switchport mode access
+switchport access vlan 1
+no shutdown
+exit
+
+copy tftp://10.200.117.152/asa842-k8.bin flash:
+copy tftp://10.200.117.152/asdm-761.bin flash:
+copy tftp://10.200.117.152/anyconnect.pkg flash:
+copy tftp://10.200.117.152/anyconnect.msi flash:
+copy tftp://10.200.117.152/anyconnect-win-3.1.05160-pre-deploy-k9.iso flash:

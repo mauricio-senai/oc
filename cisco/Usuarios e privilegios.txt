@@ -1,0 +1,15 @@
+R0(config)# username usuário priv 15 secret 1234 //Cria um usuário “usuário” com privilégio “15” e senha secret “1234”, você pode criar diversos usuários com outros privilégios)
+
+Router(config)# privilege mode {level level command | reset} command
+
+Exemplo:
+
+privilege exec level 5 ping
+//A conta de usuário (nível 1) já não tem acesso ao comando ping, pois o usuário deve ter //acesso ao nível 5 ou superior para executar a função ping.
+//Quando se vincula um comando a um nivel de privilegio, os niveis inferiores perdem //permissao a este comando
+
+//Para atribuir uma senha para o nível 5, digite o seguinte comando.
+enable secret level 5 cisco5
+
+//Para atribuir um nome de usuário específico para o nível de privilégio 5, digite o seguinte //comando.
+username USUARIO privilege 5 secret cisco5

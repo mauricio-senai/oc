@@ -1,0 +1,56 @@
+(config-router)# router-id IP_qualquer
+(config-router) network ip subrede  mask wildcard area 0
+
+Dependendo das subredes é interessenta fazer sumarização com wildcard
+
+
+
+show ip controls
+
+diz qual protocolo ta rodando e distancia adminsitrativa (confiabilidade da rota 0-25 - menor valor + confiavel) assim como os router-id que ele ta recebendo 
+show ip ospf-neighbor 
+
+ver quem é o DR - backup designated router
+int fa0/0
+ip ospf priority 100
+
+ip ospf process
+yes
+
+numero mais alto é o BDR
+o segundo ais alto é o DR
+os roteadores só vao fechar full com os DR
+com brothers normal sera 2WAY apenas
+priority 0 nao ira participar da "eleição"
+
+passive-interface loopback 0 - nao propaga a essa interface
+show controllers ser x/x ----> mostrar quem é DCE e DET
+
+RIP
+
+router rip
+version 2
+no auto-summary
+passive-interface se0/0 -> nao divulga pra essa interface
+network subrede netmask 
+
+trabalhar com class-full ou seja analisa o primeiro octeto e ve se é A, B ou C e considera os octetos conforme o classfull
+
+EIGRP
+
+router eigrp 150
+no auto
+passive-interface
+network 172.16.0.0 (considera classfull)
+network subrede wildcard
+
+
+
+show ip eigrp neighbros (tabela de vizinhança)
+show ip eigrp topology (ver status dos roteamentos)
+
+sumariar rotas
+no roteador que esta divulgando:
+ip summary-address eigrp 150 subnet_sumarizada mask_sumarizada
+
+

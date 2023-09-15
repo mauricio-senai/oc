@@ -1,0 +1,105 @@
+HQSEC1 inside - 172.16.128.0 255.255.254.0
+	outside - 81.6.63.113 255.255.255.248
+
+DCSEC1 inside - 192.168.20.0 255.255.255.192
+	dmz - 192.168.10.0 255.255.255.240
+	outside 81.6.63.114 255.255.255.248
+
+
+
+
+HQSEC1
+
+ciscoasa(config)# no object network obj_any
+ciscoasa(config)# no dhcpd address 192.168.1.5-192.168.1.132 inside
+ciscoasa(config)# hostname HQSEC1
+
+Habilitar icmp
+HQSEC1(config)# policy-map global_policy
+HQSEC1(config-pmap)#  class inspection_default
+HQSEC1(config-pmap-c)# inspect icmp
+
+
+Configurar interfaces
+HQSEC1(config)# int vlan 2
+HQSEC1(config-if)# nameif qualquercoisa
+HQSEC1(config-if)# exit
+HQSEC1(config)# int vlan 1
+HQSEC1(config-if)# nameif outside
+HQSEC1(config-if)# security-level 0
+HQSEC1(config-if)# ip add 81.6.63.113 255.255.255.248
+HQSEC1(config)# int vlan 2
+HQSEC1(config-if)# nameif inside
+HQSEC1(config-if)# security-level 100
+HQSEC1(config-if)# ip add 172.16.128.1 255.255.254.0
+
+Atribuindo VLAN as interfaces
+HQSEC1(config)# int eth0/1
+HQSEC1(config-if)# switchport mode access
+HQSEC1(config-if)# switchport access vlan 1
+HQSEC1(config-if)# exit
+HQSEC1(config)# int eth0/2
+HQSEC1(config-if)# swi
+HQSEC1(config-if)# switchport mode access
+HQSEC1(config-if)# switchport access vlan 2
+
+
+Configurando nat
+excluir qualquer configuração de nat que ja tenha antes de começar
+HQSEC1(config)# object network nat-inside
+HQSEC1(config-network-object)# subnet 172.16.128.0 255.255.254.0
+HQSEC1(config-network-object)# nat (inside,outside) dynamic interface
+
+
+
+Configurando VPN
+
+Crirar Politica
+
+HQSEC1(config)# crypto ikev1 policy 10
+HQSEC1(config-ikev1-policy)# hash sha
+HQSEC1(config-ikev1-policy)# group 2
+HQSEC1(config-ikev1-policy)# encryption aes-256
+HQSEC1(config-ikev1-policy)# authentication pre-share
+HQSEC1(config-ikev1-policy)# lifetime 86400
+
+Criar ACL de liberação de ping e protocolo IP
+Criar grupo pras redes locais dos 2 lados
+HQSEC1(config)# object network inside
+HQSEC1(config-network-object)# subnet 172.16.128.0 255.255.254.0
+HQSEC1(config)# object network otherside
+HQSEC1(config-network-object)# subnet 192.168.10.0 255.255.255.240
+HQSEC1(config-network-object)# nat (inside,outside) source static inside inside destination Static otherside otherside
+
+ACLs
+access-list VPN-IP extended
+access-list VPN-IP Extended permit ip 172.16.128.0 255.255.254.0 192.168.10.0 255.255.255.0
+access-list VPN-IP Extended permit icmp 172.16.128.0 255.255.254.0 192.168.10.0 255.255.255.0
+Primeiro ip é a local e o segundo é a externa
+
+
+
+
+
+Habilitar ikev1 isakmp
+HQSEC1(config)# crypto ikev1 enable outside
+
+
+
+
+Criar tunnel-group
+HQSEC1(config)# tunnel-group 81.6.63.114 Type ipsec-l2l
+HQSEC1(config)# tunnel-group 81.6.63.114 ipsec-attributes
+HQSEC1(config-tunnel-ipsec)# ikev1 pre-shared-key 0 Oc@2014RS
+
+Criar Transform-set ipsec
+HQSEC1(config)# crypto ipsec ikev1 transform-set TS esp-aes-256 esp-sha-hmac
+
+
+Criar mapa
+HQSEC1(config)#crypto map CMAP 1 match address VPN-IP //nome da acl
+HQSEC1(config)#crypto map CMAP 1 set ikev1 transform-set TS
+HQSEC1(config)#crypto map CMAP 1 set peer 81.6.63.114
+HQSEC1(config)# crypto map CMAP interface outside
+
+

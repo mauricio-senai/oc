@@ -1,0 +1,9 @@
+Comando para criar um redirecionamento da rede externa para um host interno(DNAT)
+
+ip nat inside source static tcp 192.168.0.5 80 200.200.200.1 80 extendable
+
+Onde:
+192.168.0.5 - ip do seu servidor (inválido/interno)
+200.200.200.1 - ip válido/externo
+tcp - Protocolo de transporte utilizado(TCP ou UDP)
+80 - porta que deseja que seja redirecionada

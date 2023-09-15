@@ -1,0 +1,58 @@
+SUMARIZAÇÃO = MANIPULAÇÃO DA MÁSCARA DE REDE = IGUALDADE DE BITS.
+Pegar a menor e a maior
+
+192.168.101.0 ---- ok
+192.168.102.0 ---- x
+192.168.103.0 ---- x
+192.168.104.0 ---- ok
+
+------------------------
+
+128	64	32	16	8	4	2	1
+0	1	1	0	0	1	0	1
+0	1	1	0	1	0	0	0
+-----------------------------------------------------------
+1   	1	1	1	x	x	x	x
+16 + 4 bits ligados que sao os iguais.
+
+192.168.0.0/20 = tamanho nao serve pois vai ate 192.168.15.255
+teria que ser 192.168.96.0/20 
+
+e pra achar o 96: 
+soma os bits iguais
+0	1	1	0
+128	64	32	16
+
+64 + 32 = 96
+
+
+
+
+
+
+/24 = 1 rede = 256 HOSTS
+/23 = 2 redes = 512 HOSTS
+/22 = 4 REDES = 1024 HOSTS
+/21 = 8 REDES = 2048 HOSTS
+/20 = 16 REDES = 4096
+
+
+
+Outro exemplo 
+
+192.168.25.0
+192.168.29.0
+192.168.33.0
+192.168.45.0
+
+pega a primeira  e a ultima
+192.168.25.0
+192.168.45.0
+16 + 2 = /18
+192.168.0.0/18
+
+25 =  0 0 0 1 1 0 0 1
+45 =  0 0 1 xxxxxxxxx  
+      1 1
+
+Soma os bits iguaus.

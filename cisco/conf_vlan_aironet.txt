@@ -1,0 +1,43 @@
+conf t -> dot11 ssid <nome>
+(config-ssid)#vlan <xx>
+(config-ssid)#authentication open
+(config-ssid)#authentication key-management wpa version 2
+(config-ssid)#wpa-psk ascii 5 <senha>
+(config-ssid)#mbssid guest-mode
+
+conf t -> dot11 ssid <nome>
+(config-ssid)#vlan <xx>
+(config-ssid)#authentication open
+(config-ssid)#authentication key-management wpa version 2
+(config-ssid)#wpa-psk ascii 5 <senha>
+(config-ssid)#mbssid guest-mode
+
+conf t -> int dott11 radio 0
+(config-if)#encryption vlan <xx> mode ciphers aes-ccm
+(config-if)#encryption vlan <xx> mode ciphers aes-ccm
+(config-if)#mbssid
+(config-if)#ssid <nome vlan>
+(config-if)#ssid <nome vlan>
+
+conf t -> int dot11radio 0.<xx>
+(config-subif)#encapsulation dot1Q <num. vlan> 
+(config-subif)#bridge group <num. vlan>
+
+conf t -> int dot11radio 0.<xx>
+(config-subif)#encapsulation dot1Q <num. vlan> 
+(config-subif)#bridge group <num. vlan>
+
+
+AP(config)# interface FastEthernet0.<xx>
+AP(config-subif)# bridge group <num vlan>
+AP(config-subif)# encapsulation dot1Q <num. vlan>
+AP(config-subif)# ip add a.b.c.d a.b.c.d
+
+AP(config)# interface FastEthernet0.<xx>
+AP(config-subif)# bridge group <num vlan>
+AP(config-subif)# encapsulation dot1Q <num. vlan>
+AP(config-subif)# ip add a.b.c.d a.b.c.d
+
+
+
+

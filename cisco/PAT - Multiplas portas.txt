@@ -1,0 +1,27 @@
+Traduzir multiplas portas do ip externo para o serviço interno
+192.168.1.10 - IP Interno
+10.10.10.9 - IP Externo
+Libera as portas de 3000 a 3389
+
+#################################################################
+
+ip nat inside source static 192.168.1.10 10.10.10.9 route-map RANGE
+!
+route-map RANGE permit 100
+  match ip address 102
+!
+access-list 102 permit tcp host 192.168.1.10 range 3000 3389 any
+
+#################################################################
+indentificar a rede de fora
+ex:
+int fa0/0
+ip nat outside
+
+identificar redes internas
+Exs:
+int se0/0/0
+ip nat inside
+
+int se0/0/1
+ip nat inside

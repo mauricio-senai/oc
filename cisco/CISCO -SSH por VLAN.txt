@@ -1,0 +1,17 @@
+Restringir o acesso SSH para uma sub-rede
+
+Você precisa limitar a conectividade SSH para uma sub-rede específica, onde todas as outras tentativas SSH a partir de IPs fora da sub-rede deve ser abandonada.
+
+Você pode usar essas etapas para realizar a mesma:
+
+Definir uma lista de acesso que permite o tráfego de que sub-rede específica.
+
+Restringir o acesso à interface da linha VTY com uma classe de acesso.
+
+Este é um exemplo de configuração. Neste exemplo apenas o acesso SSH para a sub-rede 10.10.10.0 255.255.255.0 é permitido, qualquer outro é negado o acesso.
+
+Router (config) # access-list 23 permit 10.10.10.0 0.0.0.255
+Router (config) #line vty 5 15
+Router (config-line) ssh entrada #transport
+Router (config-line) # access-class 23 em
+Router (config-line) #exit

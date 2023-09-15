@@ -1,0 +1,16 @@
+Quando STP BPDU guarda desativa a porta, a porta permanece no estado desativado, a menos que a porta seja habilitada manualmente. A operação BPDU Guard desativa a porta que tem PortFast configurado. 
+
+Command
+Console> (enable) set spantree portfast bpdu-guard enable
+
+IOS
+CatSwitch-IOS(config)# spanning-tree portfast bpduguard
+
+
+ Você pode configurar uma porta para reativar-se automaticamente a partir do estado errdisable. Emitir estes comandos, que definem o intervalo errdisable-timeout e permitir que o tempo limite de recurso:
+
+Ativar a reativação das interfaces - padrão 300 segundos
+CatSwitch-IOS(config)# errdisable recovery cause bpduguard
+
+Definir o tempo para reativar as interfaces (400 segundos)
+CatSwitch-IOS(config)# errdisable recovery interval 400

@@ -1,0 +1,110 @@
+Vamos montar uma topologia bem básica com apenas dois telefones IP 
+
+Configurando a interface FastEthernet 0/0 e o DHCP no RouterA (2811)
+
+RouterA>enable
+RouterA#configure terminal
+RouterA(config)#interface FastEthernet0/0
+RouterA(config-if)#ip address 192.168.10.1 255.255.255.0
+RouterA(config-if)#no shutdown
+
+O próprio roteador servirá nesse caso como servidor DHCP e para o CME é preciso que você forneça o IP do servidor
+TFTP para que os telefones possam buscar seu firmware e arquivos de configuração. Isso é feito com a opção 150 do DHCP.
+Veja a configuração abaixo:
+
+RouterA(config)#ip dhcp pool VOICE
+RouterA(dhcp-config)#network 192.168.10.0 255.255.255.0
+RouterA(dhcp-config)#default-router 192.168.10.1
+RouterA(dhcp-config)#option 150 ip 192.168.10.1
+
+Configurando o Call Manager Express (telephony service no RouterA)
+Agora vamos ativar o Call Manager Express (telephony service) no RouterA para habilitar o VoIP em nossa rede.
+
+RouterA(config)#telephony-service
+RouterA(config-telephony)#max-dn 5
+RouterA(config-telephony)#max-ephones 5
+RouterA(config-telephony)#ip source-address 192.168.10.1 port 2000
+RouterA(config-telephony)#auto assign 1 to 5
+
+Os comandos básicos e obrigatórios para configurar o CME estão dentro do modo de
+configuração do telephony-service. O Max-dn define o número máximo de linhas que você vai ter, já o max-ephones define o máximo
+de telefones físicos que você vai ter. Cada modelo de roteador permite um número máximo de telefones IP para o CME.
+
+O comando “ip source-address 192.168.10.1 port 2000
+define que o roteador 192.168.10.1 será o responsável pelo registro dos telefones através da porta 2000.
+
+Por último temos o auto-assign, comando que faz o registro automático dos telefones e vincula os DNs (directory numbers ou linhas)
+aos telefones físicos, economizando comandos para criação dos telefones físicos (ephones). Na prática quase não utilizamos essa
+técnica e configuramos os telefones IP inserindo os ephones manualmente, vinculando o MAC de cada telefone a um ramal (DN).
+
+Configurando a “voice vlan” no SwitchA
+Como vamos utilizar apenas telefones não vamos ter duas VLANs separadas para voz e dados, por isso vamos utilizar a VLAN 1 mesmo
+como VLAN de Voz. Esse comando é utilizado para separar o tráfego de voz e dados, por isso se você for utilizar computadores nas
+portas de switch do telefone IP você precisará criar 2 VLANs, onde o tráfego de voz é passado pela voice vlan e o de dados pela
+vlan de acesso normal. Vamos configurar as portas de 1 a 5 para conectar telefones IP, veja abaixo:
+
+SwitchA(config)#interface range fa0/1 – 5
+SwitchA(config-if-range)#switchport mode access
+SwitchA(config-if-range)#switchport voice vlan 1
+
+Configurando 0 ramal do telefone (directory number do IP Phone 1)
+O ramal (extensão/extension/linha) é chamado de número de diretório (directory number ou DN). Apesr dp ‘IP Phone 1’ estar conectado
+ao SwitchA e já estar com a VLAN de voz ele não vai subir sozinho, pois precisamos configurar os ramais que esses telefones irão
+utilizar para serem capazes de se comunicar entre si. Para isso precisamos ir no RouterA para definir os números de telefon ou DNs
+que iremos utilizar nos telefones IP. Isso é feito com o comando “ephone-dn 1? (nesse caso devido ao max-dn e max-ephone estarem em
+5 podemos ter de 1 a 5), conforme abaixo:
+
+RouterA(config)#ephone-dn 1
+RouterA(config-ephone-dn)#number 54001
+
+Portanto o primeiro telefone que conectarmos ao switch terá o ramal 54001 configurado nele.
+Faça o seguinte, ao montar a topologia lique apenas o telefone 1 e o 2 deixe desconectado, assim você garante que esse ramal estará
+no telefone 1. Depois que o telefone 1 estiver configurado você pode conectar o 2. Para verificar a configuração basta parar com o
+cursor do mouse encima do telefone. O registro (processo do telefone pegar as configurações e se registrar no roteador CME) pode
+demorar um pouco.
+
+Verificando a configuração
+Agora vamos verificar a config fo IP Phone A e ver se ele recebe o IP e o número 54001 do RouterA corretamente
+(lembre que pode demorar um pouco!).
+
+
+Clicando na aba GUI você tem uma visão gráfica do telefone e poderá fazer os testes, porém tudo é imaginário, ou seja, não vai tocar
+nada apenas aparecer mensagens do tipo “ringing”, etc.
+
+Configurando o DN para o IP Phone 2
+Agora vamos inserir o ramal do IP Phone 2 e conectá-lo ao SwitchA . O telefone IP 2 terá o ramal 54002, veja os comandos abaixo.
+
+RouterA(config)#ephone-dn 2
+RouterA(config-ephone-dn)#number 54002
+
+Verificando e testando a configuração
+Agora basta abrir a aba GUI de cada telefone, clicar encima do monofone (handset) e discar o ramal do outro telefone. Para atender
+basta clicar sobre o monofone.
+
+Vá até o telefone IP 2, disque 54001 e verifique se o IP phone 1 recebe a chamada.
+
+Por enquanto é isso aí, em um próximo artigo vou mostrar como configurar os dial-peers.
+
+#####################################################
+configurando paging no cisco callmanager express
+
+O paging é uma feature do CME que permite ao usuário enviar uma mensagem de voz, em tempo real, para um ou mais grupos de ramais, ligando apenas para um número piloto.
+
+COMO CONFIGURAR O PAGING PARA SCCP:
+
+ephone-dn 10  (este é o paging) 
+ number 777    
+ name All-phones  
+ paging ip 239.1.1.1 port 2000 (criar um IP multicast)
+
+ephone-dn 21 (Este é o cliente)
+number 2001
+paging ip 239.1.1.21 port 2000 (criar um IP multicast)
+
+ephone-dn 22 (Cliente participante de varios pagins)
+number 2002
+paging ip 239.1.1.22 port 20480
+paging group 20,21 (Lista dos pagins que ele participa)
+
+https://cmvoice.wordpress.com/tag/configurando-paging-no-cisco-callmanager-express/
+http://www.cisco.com/c/en/us/td/docs/voice_ip_comm/cucme/admin/configuration/guide/cmeadm/cmepage.html#pgfId-1017840

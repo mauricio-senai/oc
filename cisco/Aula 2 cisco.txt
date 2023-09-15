@@ -1,0 +1,17 @@
+
+Roteamento classless (padrão) - testa da menor mascara a maior, e classfull só mascara padrão na tabela de roteamento
+Roteador STUB - roteador com uma interface de saida apenas
+Rota default- de ultimo recurso, é a ulima utilizada depois de todas as rotas.
+- Rota padrão evita o descarte de qualquer endereço ip.
+
+Roteamento estatico - Proximo  ip - só vai funcionar se o ip for alcançado. Efeito colateral: se o proximo salto cai ela nao funciona, é mais seguro pois só vai manda se tiver alcanvel caso contrario nao ira manda. utiliza pesquisa recursiva, volta a tabela de roteamento com arp pra descobrir a interface por onde deve sair. Faz 2 pesquisas na tabela de roteamento, pra saber se tem rota e a segunda pra descobrir a interface de saida (com arp). Mais lento pois passa 2x na tabela de roteamento
+Interface de saida - é mais rapido pois ele sempre sabe onde sair (é a que mais deve ser usada.)
+
+
+Pratica na topologia - Olhar as interface pra ve se é igual e ir dando copy e paste em cada dispositivo.
+
+Rota sumarizada - Tem que ter uma saida pra varias subredes e VLSM subredes proximas
+Ctrl + shift +  6 pra abortar o erro quando erra comando.
+
+
+quando tiver 2 roteadores um pro outro e for faze roteamento padrao, nao fazer de 1 pro outro pra evitar looping

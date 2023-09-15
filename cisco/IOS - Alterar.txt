@@ -1,0 +1,16 @@
+Para alterar a IOS:
+#delete flash:c2800...Nome_completo
+
+#reload
+
+---- Modo rommon ----
+rommon 1 >tftpdnld
+rommon 2 >IP_ADDRESS=10.0.230.200
+rommon 3 >IP_SUBNET_MASK=255.255.0.0
+rommon 4 >DEFAULT_GATEWAY=10.0.230.254
+rommon 5 >TFTP_SERVER=10.0.230.254
+rommon 6 >TFTP_FILE=C2800..(NOME DO ARQUIVO)
+rommon 7 >tftpdnld
+
+rommon 8 >reset
+-----------------------------

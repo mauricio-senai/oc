@@ -1,0 +1,95 @@
+Tunel gre com criptografia e segurança IPSec
+
+
+Step 1
+Router> enable
+#Habilita o modo EXEC privilegiado.
+ 
+Step 2
+Router# configure terminal
+#Entra no modo de configuração global.
+ 
+Step 3 (DEPENDE)
+Router(config)# ipv6 multicast-routing
+#Permite o roteamento de multicast utilizando o protocolo Independent Multicast (PIM) e Multicast Listener Discovery (MLD) em todas as interfaces IPv6 ativado do roteador e permite o encaminhamento de multicast.
+#Ativar este comando somente se você estiver usando IPv6 multicast. Se você estiver usando IPv6 unicast, você não precisa habilitar este comando.
+ 
+Step 4
+Router(config)# ipv6 unicast-routing
+#Permite o encaminhamento de IPv6 datagramas unicast. 
+
+Step 5
+Router(config)# crypto isakmp policy 15
+#Define uma política IKE, e entra no modo de configuração de política ISAKMP.
+#número da apólice 1 indica a política com a maior prioridade. Quanto mais baixo for o valor do argumento prioridade, quanto maior a prioridade.
+
+Step 6
+Router(config-isakmp-policy)# authentication pre-share
+#Especifica o método de autenticação dentro de uma política de Internet Key Exchange (IKE).
+#As palavras-chave RSA-sig e RSA-ENCR não são compatíveis com IPv6.
+ 
+Step 7
+Router(config-isakmp-policy)# hash md5
+#Especifica o algoritmo de hash dentro de uma política de IKE.
+ 
+Step 8
+Router(config-isakmp-policy)# group 2
+#Especifica o identificador do grupo Diffie-Hellman dentro de uma política de IKE.
+ 
+Step 9
+Router(config-isakmp-policy)# encryption 3des
+#Especifica o algoritmo de criptografia dentro de uma política de IKE
+ 
+Step 10
+Router(config-isakmp-policy)# exit
+#Sai do modo de configuração de política ISAKMP e retorna ao modo de configuração global.
+ 
+Step 11
+Router(config)# crypto isakmp key cisco-10 address 172.16.0.12 255.240.0.0
+#Configura uma chave de autenticação pré-compartilhada.
+ 
+Step 12
+Router(config)# crypto ipsec transform-set myset0 ah-sha-hmac esp-3des
+#Define um conjunto transformar, e coloca o roteador em cripto transformar o modo de configuração.
+ 
+Step 13
+Router(config)# crypto ipsec profile ipsecprof
+#Define os parâmetros IPsec que estão a ser utilizados para a criptografia IPsec entre dois roteadores IPsec e entra no modo de configuração do perfil IPsec. 
+
+Step 14
+Router(ipsec-profile)# set transform-set myset0
+#Especifica o conjunto de transformação que pode ser usado com a entrada de mapa de criptografia.  
+
+Step 15
+Router(ipsec-profile)# exit
+#Sai do modo de configuração do perfil IPsec e retorna ao modo de configuração global.
+ 
+Step 16
+Router(config)# interface tunnel 1
+#Especifica uma interface de túnel e número e entra no modo de configuração de interface.
+ 
+Step 17
+Router(config-if)# ipv6 address 3ffe:b00:c18:1::3/127
+#Especifica a rede IPv6 atribuído à interface e permite o processamento IPv6 na interface.
+ 
+Step 18
+Router(config-if)# tunnel mode gre ip
+#Especifica um túnel GRE IPv6.
+
+Step 19
+Router(config-if)# tunnel source 10.0.0.1
+#Especifica o endereço de origem ou o tipo de interface de origem e número para a interface do túnel.
+ 
+Step 20
+Router(config-if)# tunnel destination 172.16.0.12
+#Especifica o endereço de destino ou o nome do host para a interface do túnel.
+ 
+Step 21
+Router(config-if)# tunnel protection ipsec profile ipsecprof
+#Associa uma interface de túnel com um perfil de IPsec.  
+
+Step 22
+Router(config-if)# end
+#Sai do modo de configuração de interface e volta ao modo EXEC privilegiado.
+
+http://www.cisco.com/en/US/docs/ios-xml/ios/sec_conn_vpnips/configuration/15-2s/sec-ipv6-ipv4-gre.html#GUID-60479DEA-49F0-4ECF-AC34-091A5A5A1B90

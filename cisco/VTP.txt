@@ -1,0 +1,35 @@
+Configuração VTP Server
+
+SW01(config)#inter f0/24
+SW01(config-if)#switchport mode trunk
+
+!Entre no modo de configuração global 
+SW01#config terminal 
+
+!Defina o switch como VTP Server 
+SW01(config)#vtp mode server 
+
+!Coloque um nome no domínio 
+SW01(config)#vtp domain brainwork 
+
+!Opcional, mas recomendado, crie um senha para o domínio 
+SW01(config)#vtp password cisco123 
+
+!Opcionalmente podemos usar a versão 2 
+SW01(config)#vtp version 2 
+SW01(config)#end 
+SW01#
+
+
+Configuração VTP Client
+
+SW02(config)#inter f0/24
+SW02(config-if)#switchport mode trunk
+
+SW02#config terminal 
+SW02(config)#vtp mode client 
+SW02(config)#vtp domain brainwork 
+SW02(config)#vtp password cisco123 
+SW02(config)#vtp version 2 
+SW02(config)#end 
+SW02#

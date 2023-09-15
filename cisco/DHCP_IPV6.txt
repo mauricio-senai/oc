@@ -1,0 +1,31 @@
+********** Configuração do DHCP com IPV6 **********
+
+Instalar o dhcp
+#apt-get install isc-dhcp-server
+
+Fazer uma copia do arquivo de configuração.
+#cp /etc/dhcp/dhcpd.conf /etc/dhcp/dhcpd.conf.bkp
+
+Configurar o arquivo do "dhcp.conf".
+#nano /etc/dhcp/dhcpd.conf  ---> Deixa-lo da seguinte maneira:
+
+           *************************************************
+Linha 13 - ** option domain-name "example.org";           ** - Comentar.
+Linha 14 - ** option domain-name-servers ns1.example.org; ** - Comentar.
+Linha 21 - ** authoritative;                              ** - Descomentar.
+Linha 50 - ** subnet6 fdab:cdef:1::0/64 {                 ** - Descomentar e Modificar de acordo com sua rede.
+Linha 51 - ** range6 fdab:cdef:1::3 fda:cdef:1::6;        ** - Descomentar e Modificar de acordo com o intervalo de ip.
+Linha 58 - ** }						  ** - Descomentar.
+           *************************************************
+
+Apos configurar o arquivo de dhcp, devemos criar o arquivo "dhcpd6.leases".
+#nano /var/lib/dhcp/dhcpd6.leases  ----> Usar o "ctrl + o" para salvar o arquivo em branco.
+
+********************************************************************************
+** OBS:									      **				
+** dhcpd6.leases -- Este arquivo armazena os endereços distribuidos por dhcp. **
+**									      **
+********************************************************************************
+
+Logo apos todas asconfigurações necessarias feitas e so reiniciar o serviço.
+#dhcpd -6

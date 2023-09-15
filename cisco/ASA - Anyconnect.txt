@@ -1,0 +1,97 @@
+Copiar o anyconnect para o ASA:
+##################
+copy tftp: flash:/webvpn/
+
+Address or name of remote host []? 192.168.100.100
+Source filename []? anyconnect-win-3.1.08009-k9.pkg
+Destination filename [/webvpn/anyconnect-win-3.1.08009-k9.pkg]?
+Accessing tftp://192.168.100.100/anyconnect-win-3.1.08009-k9.pkg...
+Loading anyconnect-win-3.1.08009-k9.pkg from 192.168.100.100 (via GigabitEthernet0): !!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+[OK - 37997096 bytes]
+
+37997096 bytes copied in 117.644 secs (322984 bytes/sec) 
+###################
+
+Configurar o anyconnect
+#########################
+webvpn
+ anyconnect image disk0:/anyconnect-win-2.3.0254-k9.pkg 1 regex "Windows NT"
+ enable Outside
+ anyconnect enable
+ !anyconnect-essentials
+ exit
+!
+ip local pool vpnPool 192.168.100.10-192.168.100.30 mask 255.255.255.224
+!
+group-policy vpnPolicy internal
+!
+group-policy vpnPolicy attributes
+ banner value Bem Vindo a Minha VPN
+ dns-server value 192.168.10.1
+ vpn-tunnel-protocol ssl-client
+ default-domain value example.com
+ address-pools value vpnPool
+exit
+!
+tunnel-group ssl-vpn type remote-access
+!
+tunnel-group ssl-vpn general-attributes
+ default-group-policy vpnPolicy
+ exit
+!
+tunnel-group ssl-vpn webvpn-attributes
+ group-alias SSLVPNClient enable
+ exit
+!
+webvpn
+ tunnel-group-list enable
+exit
+!
+#################################
+
+Criar usuarios locais para autenticação do anyconnect
+ciscoasa(config)#username vpnUser password CISCO
+#################################
+
+Ate aqui funciona no anyconnect-win-4.0.02052-k9.pkg
+(Este pacote não descompacta com pouca memoria ram no ASA)
+(Testei com:
+anyconnect-win-2.3.0254-k9.pkg -> ASA
+anyconnect-win-4.0.02052-pre-deploy-k9.msi -> Cliente Win 8
+)
+
+Dar uma olhada em opções mais avancadas, por exemplo tirar o erro de certificado:
+http://www.cisco.com/c/en/us/support/docs/security/anyconnect-secure-mobility-client/200533-AnyConnect-Configure-Basic-SSLVPN-for-I.html
+
+||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Step 3. Enable the http Server on the Router
+
+ip http server
+ip http secure-server
+
+Step 4. Generate RSA Keypair and Self-Signed Certificate
+crypto key generate rsa label SSLVPN_KEYPAIR modulus 2048
+
+show crypto key mypubkey rsa SSLVPN_KEYPAIR
+
+crypto pki trustpoint SSLVPN_CERT
+ enrollment selfsigned
+ subject-name CN=fdenofa-SSLVPN.cisco.com
+ rsakeypair SSLVPN_KEYPAIR
+
+crypto pki enroll SSLVPN_CERT
+
+!% Include the router serial number in the subject name? [yes/no]: no
+!% Include an IP address in the subject name? [no]: no
+!Generate Self Signed Router Certificate? [yes/no]: yes
+
+!Router Self Signed Certificate successfully created
+
+show crypto pki certificates SSLVPN_CERT
+
+Step 5. Configure Local VPN User Accounts
+aaa new-model
+aaa authentication login SSLVPN_AAA local
+username VPNUSER password TACO

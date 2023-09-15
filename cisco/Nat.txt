@@ -1,0 +1,48 @@
+
+Nat é traduzir ips internos para ips externos, para poder navegar na internet
+
+1° Configurar nat inside e outside informando se o ip sera privado ou externo, inside sera para os ips privados/locais e ouside para os ips externos
+
+Rede com R3 com a int fa0/0 conectada a internet pelo ip 10.0.240.2
+configurar o nat no roteador que esta com a interface conectada a internet
+
+R3(config)#int se0/0/0 #identificar no R3 quais interfaces estão com ip interno
+R3(config-if)#ip nat inside
+R3(config)#int se0/0/1
+R3(config-if)#ip nat inside
+
+R3(config)#int fa0/0 #Int conectada ao ip externo
+R3(config-if)#ip nat outside
+
+2°Configurar o Pool, dos ips externos dos quais os internos serão traduzidos
+
+R3(config)#ip nat pool internet (qualquer nome) 10.0.240.2 (até) 10.0.240.2 netmask 255.255.0.0 #sera traduzido apenas para um ip
+
+3° Configurar access list standard, identificando quais redes internas terão internet, ou seja, serão traduzidas pelo NAT
+
+R3(config)# access-list 1 permit any #qualquer ip
+
+4° ativar o NAT, relacionando access-list ao NAT
+
+
+R3(config)#ip nat inside source list 1 pool internet overload
+todo o ip inside, das int ser0/0/0 e 0/0/1 que sejan da fonte (source) list 1, serão traduzidos para o pool internet sendo do tipo overload (overload-varios ips para um ip externo)
+
+
+################################
+Nat por interface e não por IP #
+################################
+(OBS.: Serial=outside e fast=inside)
+
+Router>enable         
+Router#configure terminal
+
+Router(config)#ip nat inside source list 1 interface serial 0/0/0 overload
+Router(config)#access-list 1 permit any
+
+Router(config)#interface f0/1    
+Router(config-if)#ip nat inside     
+Router(config-if)#exit
+
+Router(config)#interface s0/0/0   
+Router(config-if)#ip nat outside

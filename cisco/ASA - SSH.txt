@@ -1,0 +1,18 @@
+
+ASA(config)# ! Criar usuario
+ASA(config)#username Admin password cisco
+ASA(config)# ! Permitir autenticação local
+ASA(config)#aaa authentication ssh console LOCAL
+ASA(config)# ! Criar a chave de cryptografia
+ASA(config)#crypto key generate rsa modulus 1024
+ASA(config)# ! Permitir acesso de qualquer host na inside
+ASA(config)#ssh 0.0.0.0 0.0.0.0 inside
+ASA(config)# ! Permitir acecsso apenas do IP na outside
+ASA(config)#ssh 198.231.15.117 255.255.255.255 outside
+ASA(config)# ! Opcional definir a versão do ssh
+ASA(config)#ssh version <version_number> (1 ou 2 -> Opcional)
+ASA(config)# ! Opcional definir o tempo ocioso antes de desligar
+ASA(config)#ssh timeout <minutes> (60 é o padrão)
+
+
+http://www.cisco.com/c/en/us/td/docs/security/asa/asa84/configuration/guide/asa_84_cli_config/access_management.html

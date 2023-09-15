@@ -1,0 +1,28 @@
+A senha do roteador fica armazenado na startup-config (NVramo , memoria nao volatil)
+
+Tem que entra no modo rommon 
+
+quando iniciar o roteador apertar ctrl+break
+vai entrar no modo rommon
+
+rommon > confreg 0x2142
+rommon > reset
+
+o roteador ira iniciar ignorando a startup-config
+
+roteador>en
+roteador# copy startup-config running-config
+roteador# enable secret # Cria senha pro enable ja criptografada
+e/ou
+roteador# enable password #criar senha pro enable se quiser criptografa tem que dar service 
+password-encryption
+e/ou
+roteador# line console 0 #senha do roteador pela console
+e/ou
+roteador# line vty 0 15 # Telnet
+
+9º Como ainda estamos no modo geral, aproveitar para mudar o registro para 0×2102 (padrão dos roteadores), através do comando “config-register 0×2102.
+
+roteador# copy running-config startup-config
+
+

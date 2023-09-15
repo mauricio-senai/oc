@@ -1,0 +1,16 @@
+show ip nat translations
+show ip nat static
+debbug ip nat
+
+comandos pra detectar quando o nat nao esta funcionando
+
+
+NAT estatico - permite que uma maquina especifica da rede interna saia por um ip publico
+Overload - Permite que varias maquinas na rede itnerna saiam por um pool de endereços publicos
+
+
+Na configuração de vpn o remark e um description pra explicar o que akilo faz
+
+
+
+VPN nao trafega multicast, pra isso server o tunnel gre

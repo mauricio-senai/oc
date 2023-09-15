@@ -1,0 +1,17 @@
+int range fa0/1-5
+switchport mode trunk ou access
+(access) switchport access vlan vlan-id
+channel-group-n° mode desirable
+
+
+
+
+no outro switch fazer o mesmo só que no final channel-group-° mode auto
+
+
+
+trunk - aumenta o desempenho do trafego de varias vlan de um switch pra um router por exemplo.
+
+
+
+vlan - configura 5 portas pra vlan 10 em 2 switchs, com 3 pcs em cada, a comunicação entre essas vlans pode usar etherchannel

@@ -1,0 +1,30 @@
+Criar o NTP server
+
+switch# config t
+switch(config)# ntp master
+switch(config)# do show running-config ntp
+
+
+
+Associando Roteador ao servidor NTP
+
+Router> en
+Router# conf t
+Router(config)# ntp server 192.168.0.1
+
+
+Configurar o Time zone
+
+Router(config)# clock timezone PST -3 0
+(PST = qualquer 3 letras maiusculas- Funciona com qualquer uma)
+(-3 = horas)
+(0 = minutos)
+
+Para verificar
+
+Router(config)# do sh ntp association
+Router(config)# do sh ntp status
+Router(config)# do show clock (mostra a hora no sistema)
+
+
+http://www.cisco.com/c/en/us/td/docs/switches/datacenter/sw/5_x/nx-os/system_management/configuration/guide/sm_nx_os_cg/sm_3ntp.html

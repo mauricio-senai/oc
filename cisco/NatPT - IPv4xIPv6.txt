@@ -1,0 +1,67 @@
+http://www.cisco.com/c/en/us/support/docs/ip/network-address-translation-nat/113275-nat-ptv6.html#t1
+
+
+
+Testar
+
+
+
+
+hostname R1
+ipv6 unicast-routing
+!
+interface fastEthernet 0/0
+ ip address 192.168.30.10 255.255.255.0
+ ipv6 nat
+ exit
+!
+interface fastEthernet 1/0
+ no ip address
+ ipv6 address 2001:DB8:3002::9/64
+ ipv6 enable
+ exit
+!
+ipv6 route ::/0 2001:DB8:3002::10
+ipv6 nat v4v6 source 192.168.30.9 2000::960B:202
+
+!--- Translates the ipv4 add of R2 fa0/0 to ipv6 address.
+          
+ipv6 nat v6v4 source 3001:11:0:1::1 150.11.3.1
+
+!--- Translates the ipv6 add of loop0 of R3 to ipv4 address.
+              
+ipv6 nat prefix 2000::/96
+
+!--- The destination prefixes that matches 2000::/96 
+!--- are translated by NAT-PT.
+
+############################################################
+
+hostname R2
+!
+interface fastEthernet 0/0
+ ip address 192.168.30.9 255.255.255.0
+ exit
+!
+ip route 0.0.0.0 0.0.0.0 192.168.30.10
+!
+
+!
+end
+
+###########################################################
+
+hostname R3
+ipv6 unicast-routing
+!
+interface Loopback0
+ no ip address
+ ipv6 address 3001:11:0:1::1/64
+!
+interface fastEthernet 0/1
+ no ip address
+ ipv6 address 2001:DB8:3002::10/64
+ exit
+!
+ipv6 route ::/0 2001:DB8:3002::9
+!

@@ -1,0 +1,45 @@
+OSPF
+
+Protocolo State Link
+
+-Verifica a disponibilidade do link, vendo a velocidade, se tive 2 roteador conectados ao primeiro, ele vai ver qual tem velocidade maior e manda por ele, assim como vai dividir a carga se precisa, levando em consideração a velocidade do link
+
+-Métrica largura de banda
+
+-Nao tem limites de saltos como o rip
+
+-FUnciona em rotas de fabricantes diferentes
+
+
+COmandos do OSPF
+
+R1(config)# router OSPF <numero do processo, pode ser qualquer um>
+R1(config)# netork <netid> <wild card mask> area0
+
+show ip ospf interface serial (ex: 0/0/0)- comando pra mostrar o valor de custo do OSPF
+
+
+
+Como calcular wild mask
+
+botar 255.255.255.255 e subtrair com a mascara do netID
+
+ex:mascara 0.0.0.0/26
+ 255.255.255.255
+- 0 . 0. 0. 192
+--------------------
+0.0.0.63
+
+
+default-information originate always -> Rota default pro roteador
+
+default-information originate always (rota default no roteador com interface de internet, e configurado no ospf
+
+
+show ip route
+
+S* 0.0.0.0 SE 0/3/0-> ROta default vai ser usada em ultimo caso, ao inves de descarta um pacote que nao passo em nenhum protocolo, ele vai ser mandado pra rota default, caso esta seje configurada.
+O [110-> DIstancia administrativa/ xxx -> métrica. Vai mostrar a métrica menor sem descarta a maior caso a menor falhe ele utiliza a maior. Na métrica vai mostrar um calculo definindi a menor metrica, ou seja a com caminho mais rapido (redundancia) --> OSPF
+R [120/xxx] Rip, na métrica vai mostrar a quantidade de saltos
+S [1/1] Statica, é prioridade em cima de todos os outros pprotocolos
+Distancia administrativa -> Quando temos varios protocolos

@@ -1,0 +1,3 @@
+- Ativar as licenças trial(60 dias)
+
+license boot module c2900 technology-package uck9

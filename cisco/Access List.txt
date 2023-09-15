@@ -1,0 +1,50 @@
+Access list standard = 1 a 99
+access list extend = 100 a 199
+
+
+Access List Standard
+
+Será configurada sempre na interface mais próxima ao destino, com excessão a acesso telnet ou SSH
+Por padrão as ACL tem como ultima linha um Deny any (bloqueia tudo que nao passa nas outras linhas)
+por isso tem que permitir tudo antes da ultima linha dependendo dar ACL
+Exemplos:
+
+
+Route(Config)# access-list 10 (numero de 1 a 99 definindo que sera padrão) deny host (padrão nao precisa ser digitado, se botar só o ip sera entendido que é host) A.B.C.D (ip)  ---> boqueia o acesso de um host especifico.
+
+Router(config)# access-list 50 deny 172.16.40.0 0.0.0.255
+router(config)# access-list 50 permit any (precisa dessa linha porque se for uma rede diferente da 172.16.40.0 por padrao tera um deny any que bloqueara todo o resto)
+
+Depois de criar as ACL precisa aplicar ela a interface:
+
+Router(config)# int fa0/0 
+Router(config-if)# ip access-group 50 out 
+
+Esse comando impedirá que qualquer pacote originado da rede 172.16.40.0, chegue a rede de saida da interface fa0/0
+
+
+
+
+
+Telnet ou SSH
+
+router(config)# access-list 60 permit 172.16.3.4 
+router(config)#line vty 0 4
+router(config-line)# access-class 60 in
+
+
+
+
+
+Access-list Extended (100 a 199)
+
+#Bloquear ICMP da rede 172.16.1.32 para a rede 192.168.1.0
+
+ROuter(config)#access-list 100 deny (ou permit) icmp (protocolo) 172.16.1.32 0.0.0.15 (origem) 192.168.1.0 0.0.0.255 (destino)
+Router(config)#access-list 100 permit ip any any (ira permitir que todos os outros protocolos, redes e subredes, possam se comunicar)
+
+
+#Permitir que a subrede 172.16.1.32 consiga apenas pingar na subrede 192.168.1.0
+ROuter(config)#access-list 100 permit icmp  172.16.1.32 0.0.0.15  192.168.1.0 0.0.0.255
+Router(config)#access-list 100 deny ip 172.16.1.32 0.0.0.15  192.168.1.0 0.0.0.255
+Router(config)#access-list 100 permit ip any any

@@ -1,0 +1,17 @@
+Interface VIrtual para simular trafego
+
+ROuter> en
+Router# conf t
+Router(config)# int loopback 1  (1-...)
+Router(config-if)# ip address 192.168.0.1/24
+Router(config-if)# commit / end
+
+
+Rota default
+
+ROuter(config)# ip route 0.0.0.0 0.0.0.0 loopback 1
+
+Interface Virtual Nula
+
+ROuter(config)# int null 0
+ROuter(config-if) commit / end

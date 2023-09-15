@@ -1,0 +1,11 @@
+no logging console console debugging
+
+
+line con 0
+logging synchronous
+
+linne vty 0 4 
+logging synchronous
+
+line vty 5 15
+logging synchronous

@@ -1,0 +1,1 @@
+switchport trunk native vlan 99 - mudar vlan 1 para a vlan 99

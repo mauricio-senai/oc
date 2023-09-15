@@ -1,0 +1,12 @@
+ip domain-name nome _do_dominio
+crypto key generate rsa
+aaa new-model
+aaa authentication login NPS-SERVER group radius local
+radius-server host 192.168.1.2 (IP DO SERVER) key (password compartilhado)
+aaa autorization exec NPS-SERVER group radius local if-authenticated 
+aaa authorization exec default group radius local
+
+line vty 0 4
+login authentication NPS-SERVER
+authorization exec NPS-SERVER
+transport input ssh

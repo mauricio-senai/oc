@@ -1,0 +1,58 @@
+login block
+
+Passo-a-Passo necessários para a configuração:
+1. enable
+2. configure terminal
+3. login block-for <seconds> attempts <tries> within <seconds>
+4. login quiet-mode access-class {acl-name | acl-number}
+5. exit
+ 
+Exemplo:
+Router> enable
+Router# configure terminal
+Router(config)# login block-for 180 attempts 3 within 120
+Router(config)# login quiet-mode access-class myacl
+Router(config)# ip access-list extended myacl
+Router(config-std-nacl)# permit host 192.168.10.1
+Router(config-std-nacl)# permit ip 172.16.33.0 255.255.255.0 any
+
+Gerar LOG e registrar:
+login on-failure log
+login on-success log
+
+No exemplo acima, o roteador foi configurado para bloquear o acesso remoto por 3 minutos (180 segundos) caso o mesmo receba 3 tentativas erradas durante um intervalo de 2 minutos (120 segundos).
+
+Adicionalmente é possível configurar o parâmetro "quiet-mode" e associá-lo a uma ACL específica. Neste caso, hosts ou sub-redes permitidas através desta ACL terão o acesso permitido mesmo durante o período de block.
+Na ACL configurada no exemplo em questão, somente o host 192.168.10.1 e os hosts da rede 172.16.33.0/24 poderão acessar ao equipamento durante este período.
+ 
+Os seguintes comandos de "show" podem ser utilizados para verificar se a feature foi configurada corretamente e se foi verificado algum trigger para o bloqueio de logins.
+ 
+Router#show login
+     A default login delay of 1 seconds is applied.
+     Quiet-Mode access list myacl is applied.
+ 
+     Router enabled to watch for login Attacks.
+     If more than 3 login failures occur in 120 seconds or less,
+     logins will be disabled for 180 seconds.
+ 
+     Router presently in Normal-Mode.
+     Current Watch Window
+         Time remaining: 82 seconds.
+         Login failures for current window: 0.
+     Total login failures: 0.
+ 
+Verificamos que a não há nenhuma falha de login assim que a feature é configurada:
+ 
+Router#show login failures
+*** No logged failed login attempts with the device.***
+ 
+ 
+Com o passar do tempo foi possível identificar que o equipamento em questão teve dois acessos onde a autenticação falhou. Além disso é possível verificar o IP utilizado e o momento da tentativa de login. 
+ 
+Router#show login failures
+Username      Source IPAddr  lPort Count  TimeStamp
+ try1          10.1.1.1        23    1     21:52:49 UTC Sun Mar 9 2003
+ try2          10.1.1.2        23    1     21:52:52 UTC Sun Mar 9 2003
+
+
+https://supportforums.cisco.com/pt/document/12271361
