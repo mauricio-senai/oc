@@ -1,0 +1,3 @@
+Para bloquear o Regedit, você deve ir em:
+
+Configurações do Usuário -> Políticas -> Modelos Administrativos -> Sistema -> Impedir acesso a Ferramenta de edição do Registro.

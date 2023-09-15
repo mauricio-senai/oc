@@ -1,0 +1,36 @@
+Para criar um certificado de domínio
+
+####################################################################
+No mesmo servidor do CA
+
+- Abra o Gerenciador do IIS e navegue até o nível que deseja gerenciar.
+
+- Em Exibição de Recursos, clique duas vezes em Certificados de Servidor.
+
+- No painel Ações, clique em Criar Certificado de Domínio.
+
+- Na página Propriedades de Nome Distinto do Assistente de Criação de Certificado, digite as seguintes informações e, em seguida, clique em Avançar:
+
+- Na caixa Nome comum, digite um nome para o certificado.(Endereço do Site ex. "www.contoso.com")
+
+- Na caixa Organização, digite o nome da organização em que o certificado será usado.
+
+- Na caixa Unidade organizacional, digite o nome da unidade organizacional na organização em que o certificado será usado.
+
+- Na caixa Cidade/localidade, digite o nome abreviado da cidade ou localidade onde a empresa ou a unidade organizacional estão localizadas.
+
+- Na caixa Estado/província, digite o nome abreviado do estado ou província onde a empresa ou a unidade organizacional estão localizadas. 
+
+- Na caixa País/região, digite o nome do país ou região onde a empresa ou a unidade organizacional estão localizadas.
+
+- Na página Autoridade de Certificação Online, na caixa Especificar Autoridade de Certificação Online, digite o nome de um servidor de autoridade de certificação (CA) no seu domínio do Windows ou clique em Selecionar para pesquisar um servidor de CA no domínio.
+
+- Na caixa Nome amigável, digite um nome amigável para o certificado e, em seguida, clique em Concluir. Você deve fornecer um nome amigável para o certificado.
+
+####################################################################
+Em UM SERVIDOR DIFERENTE DO CA
+
+- Criar o Certificado no IIS do servidor que tem o CA(Mesmo procedimento de cima)
+- Exportar este Certificado(Clicar com o botão direito no Certificado e "exportar")
+- Envia-lo para o servidor de destino (Via pendrive ou compartilhamento de rede)
+- No servidor de destino, no IIS, importar o Certificado

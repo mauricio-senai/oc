@@ -1,0 +1,3 @@
+http://windows.microsoft.com/pt-br/windows/enable-802-1x-authentication#1TC=windows-7
+
+https://technet.microsoft.com/pt-br/library/cc730988.aspx

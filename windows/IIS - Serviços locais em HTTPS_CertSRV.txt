@@ -1,0 +1,12 @@
+Tornar os serviços locais do Server disponíveis em HTTPS
+(Default web Site)
+
+Gerenciador do IIS
+- botão dirreito em "Default web Site"
+ 	- Editar Associações
+		- Adicionar
+Tipo=HTTPS
+Certificado SSL(Selecionar o do server)
+OK.
+
+

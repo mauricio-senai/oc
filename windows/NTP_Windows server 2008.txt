@@ -1,0 +1,50 @@
+NTP SERVER
+
+SERVER SETTINGS
+
+1. Enable the NTP Server
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\W32Time\TimeProviders\NtpServer]"
+"Enabled"=dword:00000001
+CLIENT SETTINGS
+
+1. Enable NTP Client and set polling interval.
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\W32Time\TimeProviders\NtpClient]"
+"Enabled"=dword:00000001
+"SpecialPollInterval"="300"
+2. Configure the NTP Time Source, period and frequency
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\W32Time\Parameters]
+"NtpServer"="[NTP SERVER IP],0x1"
+"Type"="NTP"
+"Period"="freq"
+NTP CLIENT
+
+CLIENT SETTINGS
+
+1. Enable NTP Client and set polling interval.
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\W32Time\TimeProviders\NtpClient]"
+"Enabled"=dword:00000001
+"SpecialPollInterval"="300"
+2. Configure the NTP Time Source, period and frequency
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\W32Time\Parameters]
+"NtpServer"="[NTP SERVER IP],0x1"
+"Type"="NTP"
+"Period"="freq"
+ 
+
+ADDITIONAL 
+
+STARTUP
+
+By default the w32tm service will not automatically start if your Windows machine is not on a domain. To ensure that the service starts automatically run the following command :
+
+sc triggerinfo w32time start/networkon stop/networkoff
+TROUBLESHOOTING
+
+To confirm that your clients are correctly peering with your time source run the following command.
+
+w32tm /query /peers

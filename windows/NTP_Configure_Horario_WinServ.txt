@@ -1,0 +1,11 @@
+Configure o Horário do Windows Server para usar o modo de cliente quando ele for sincronizado com o servidor de horário.
+Você pode seguir estas etapas:
+
+Clique em Iniciar, clique em Executar, digite cmd e pressione ENTER.
+
+No prompt de comando, digite os comandos a seguir na ordem especificada. Depois de digitar cada comando, pressione ENTER.
+
+w32tm /config /manualpeerlist:NTP_server_IP_Address,0x8 /syncfromflags:MANUAL
+net stop w32time
+net start w32time
+w32tm /resync

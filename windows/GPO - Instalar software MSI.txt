@@ -1,0 +1,12 @@
+Primeiro devemos copiar o arquivo MSI,
+para uma pasta compartilhada na rede onde as máquinas tenham acesso para fazer a instalação(permissão para todos),
+como a instalação é autônoma (sem necessidade de usuário nenhumintervir) podemos criar uma pasta no Netlogon.
+
+Em 
+-->Configuração de Computador
+---->Politicas
+------>Configurações de Software
+-------->Novo (Botão da Direita)
+---------->Pacote
+------------>Fornecer o caminho de rede(Ex.: \\192.168.0.1\softwares)
+------------>Atribuido(Metodo de Implantação)

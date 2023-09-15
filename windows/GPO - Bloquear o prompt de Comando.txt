@@ -1,0 +1,8 @@
+Dentro desta GPO vc vai em:
+
+->User Configuration
+--->Administrative Templates
+----->System
+------->Prevent Access to the Comand Prompt.
+
+Deixe Enable.

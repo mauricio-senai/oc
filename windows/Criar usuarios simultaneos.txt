@@ -1,0 +1,18 @@
+for($i=1; $i -le 10; $i++){
+net user usuario$i 1@asdfg /ADD;
+net group administrators usuario$i /ADD;
+}
+
+-----------------------------------------
+Operator	Description
+-eq		Equal to
+-lt		Less than
+-gt		Greater than
+-ge		Greater than or Eqaul to
+-le		Less than or equal to
+-ne		Not equal to
+-----------------------------------------
+# 1. Get the user, based on their "display name"
+$User = Get-ADUser -LDAPFilter '(&(displayname=Trevor Sullivan))';
+# 2. Change the user's home directory and home drive
+Set-ADUser -Identity $User.SamAccountName -HomeDirectory \\fileserver\users\trevor -HomeDrive U;

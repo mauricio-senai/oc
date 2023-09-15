@@ -1,0 +1,20 @@
+To redirect special folders to the root directory
+
+Open a GPO
+
+In the console tree, under User 
+
+Configuration\Windows Settings\Folder Redirection, double-click Folder Redirection to display the special folder that you want to redirect.
+
+Right-click the special folder that you want to redirect (such as Desktop or My Documents), and then click Properties.
+
+Click the Target tab, and then in the Settings box, select Basic - Redirect everyone’s folder to the same location.
+
+Under Target folder location, select Create a folder for each user under the root path.
+
+In the Root Path box, type a Universal Naming Convention (UNC) path, such as
+\\servername\sharename, and then click OK.
+
+In the Properties dialog box for the special folder, click OK.
+
+The user name and folder name are appended to the UNC path automatically.

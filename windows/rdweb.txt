@@ -1,0 +1,24 @@
+RDweb
+
+Instalar Serviços de Área de trabalho remota
+Marcar primeira opção e as 3 ultimas
+
+Serviços de certificados do active directory
+
+
+- Adicionar client no dominio e o computador desse client no grupo Computadores com TS web Access
+- Botar o certificado criado pelo CA
+- alterar as 3 gpos abaixo
+
+(TESTAR)- Configurações do computador - diretivas - configurações do windows- configurações de segurança - diretivas locais - atribuição de direito dos usuarios - Permitir logon pelo serviço da area de trabalho remota (grupo)
+
+(FUNCIONA)- Configurações do computador - modelos administrativos - sistema - delegações de credenciais - permitir delegação de credenciais padrão - Habilitado e em mostrar botar o valor TERMSRV/*     . E marcar a opção concatenar padrões ...
+
+(TESTAR)- - Configurações do computador - modelos administrativos - componentes do windows - serviços da area de trabalho remota - cliente de conexao de area de trabalho remota - especificar impressoes digitais sha1
+	- Nessa gpo colar a fingerprint que esta no certiicado CA sendo usado pelos clientes
+
+
+http://www.cooperati.com.br/2011/05/02/aprimorando-o-acesso-dos-usuarios-ao-remoteapp-e-ao-vdi-sso-logon-unico-no-web-access/
+
+http://www.linhadecodigo.com.br/artigo/3185/aprimorando-o-acesso-ao-remoteapp-e-ao-vdi.aspx
+

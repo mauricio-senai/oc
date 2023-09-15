@@ -1,0 +1,27 @@
+https://technet.microsoft.com/pt-br/library/cc738132(v=ws.10).aspx#BKMK_CREATE
+
+
+Para criar um volume de sistema ou de inicialização espelhado
+
+1- Abra o Gerenciamento do Computador (Local). 
+2- Na árvore de console, clique em Gerenciamento do Computador (Local), clique em Armazenamento e, em seguida, em Gerenciamento de Disco. 
+3- Se o volume do sistema ou de inicialização já estiver em um disco dinâmico, vá para a etapa 4. Caso contrário, você deve converter o disco em dinâmico antes de espelhá-lo.
+Como?
+	3.1- Clique com o botão direito do mouse no disco que contém o volume de sistema ou de inicialização e clique em Converter em disco dinâmico.
+	
+	3.2- Na caixa de diálogo Converter em disco dinâmico, selecione o disco básico a ser convertido em dinâmico e clique em OK.
+	3.3- Na caixa de diálogo Discos a serem convertidos, clique em Converter.
+	3.4- Na caixa de diálogo Gerenciamento de disco, clique em Sim.
+	3.5- Na caixa de diálogo Converter em disco dinâmico, clique em Sim.
+	3.6- Na caixa de diálogo Confirmar, clique em OK para reiniciar o computador.
+	3.7- Faça logon após a reinicialização do computador. Na caixa de diálogo Alteração das configurações do sistema, clique em Sim para reiniciar o computador novamente.
+
+	3.8- Faça logon após a reinicialização do computador.
+	3.9- Abra o Gerenciamento do Computador (Local). 
+	3.10- Na árvore de console, clique em Gerenciamento do Computador (Local), clique em Armazenamento e, em seguida, em Gerenciamento de Disco. 
+	3.11- Vá para a etapa 4.
+
+4- Clique com o botão direito do mouse no volume do sistema ou de inicialização e clique em Adicionar Espelho.
+5- Na caixa de diálogo Adicionar Espelho, selecione um disco dinâmico não alocado com espaço livre suficiente para espelhar o volume do sistema ou de inicialização e clique em Adicionar Espelho. 
+
+O <b>Gerenciamento de disco</b> sincroniza os discos novamente. Quando a ressincronização estiver concluída, o volume do sistema ou de inicialização será um volume espelhado tolerante a falhas.

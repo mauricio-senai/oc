@@ -1,0 +1,16 @@
+Import-module activedirectory
+
+for($i=1; $i -le 10; $i++){
+net user usuario$i 1@asdfg /ADD /expires:never ;
+net group administrators usuario$i /ADD;
+set-aduser usuario$i -homedirectory \\servername\shareneme\usuario$i -homedrive u:
+}
+
+
+Operator	Description
+-eq		Equal to
+-lt		Less than
+-gt		Greater than
+-ge		Greater than or Eqaul to
+-le		Less than or equal to
+-ne		Not equal to

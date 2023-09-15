@@ -1,0 +1,40 @@
+Criar uma relação de confiança entre florestas
+
+Para abrir o Domínios e Relações de Confiança do Active Directory, clique em Iniciar, Ferramentas Administrativas e Domínios e Relações de Confiança do Active Directory.
+Para abrir Domínios e Relações de Confiança do Active Directory em Windows Server® 2012, clique em Iniciar, digite domain.msc.
+
+
+-Na árvore de console, clique com o botão direito do mouse no domínio que você deseja administrar e, em seguida, clique em Propriedades.
+-Na guia Relações de Confiança, clique em Nova Relação de Confiança e em Avançar.
+-Na página Nome da Relação de Confiança, digite o nome DNS (ou NetBIOS) do domínio em clique em Avançar.
+-Na página Tipo de Relação de Confiança, clique em Relação de confiança da floresta e em Avançar.
+-Na página Direção da Relação de Confiança, execute um destes procedimentos:
+
+###########################################################################################
+Para criar uma relação de confiança da floresta bidirecional, clique em Bidirecional.
+
+Os usuários nessa floresta e na floresta especificada poderão acessar os recursos em qualquer uma delas.
+
+###########################################################################################
+Para criar uma relação de confiança da floresta de entrada unidirecional, clique em Unidirecional: entrada.
+
+Os usuários na floresta especificada não poderão acessar nenhum recurso nessa floresta.
+
+###########################################################################################
+Para criar uma relação de confiança da floresta de saída unidirecional, clique em Unidirecional: saída.
+
+Os usuários nessa floresta não poderão acessar nenhum recurso na floresta especificada.
+
+###########################################################################################
+Continue a seguir as instruções do assistente.
+
+Considerações adicionais
+Para executar este procedimento, você deve ser membro do grupo Admins. do Domínio ou Administradores Corporativos nos Serviços de domínio Active Directory, ou a autoridade adequada deve ter sido delegada a você. Como uma prática recomendada de segurança, é aconselhável usar Executar como para executá-lo. Para obter mais informações, pesquise "usando executar como" na Ajuda e Suporte.
+
+Se você tiver as credenciais administrativas apropriadas para cada floresta, poderá criar os dois lados de uma relação de confiança da floresta ao mesmo tempo, clicando em Este domínio e o domínio especificado na página Lados da Relação de Confiança. 
+
+Para permitir que os usuários da floresta especificada tenham acesso a todos os computadores da floresta local, na página Propriedades de Relação de Confiança de Saída, clique em Autenticação em toda a floresta. Prefira essa opção quando as duas florestas pertencerem à mesma organização.
+
+Se desejar limitar seletivamente a autenticação para determinados usuários e grupos da floresta especificada, na página Propriedades de Relação de Confiança de Saída, clique em Autenticação seletiva. Prefira essa opção quando as duas florestas especificadas pertencerem a uma organização diferente.
+
+Além de criar novas relações de confiança, é possível modificar as existentes clicando na guia Relação de Confiança.

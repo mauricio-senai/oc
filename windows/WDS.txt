@@ -1,0 +1,13 @@
+- Descompactar iso em alguma pasta
+- instalar o serviço de implantação do windows e o dhcp e selecionar o diretório onde ele ficara
+- adicionar o install.win do cd em imagens de instalação e o boot.win em imagens de inicialização
+- propriedades dele 
+	- aba resposta do PXE - responder a todos os clientes 
+	- aba dhcp - marcar nao escutar dhcp na porta 67 se o dhcp ta nesse servidor
+	- aba multicast - receber ip por dhcp
+	- aba rede - porta 50000 a 65000
+
+
+caso de erro no tftp do cliente
+mudar parametro udpportpolicy de 1 para 0
+HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\services\WDSServer\Parameters.

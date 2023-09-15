@@ -1,0 +1,9 @@
+Nas Diretivas de grupo vá em:
+->configuração do computador
+ ->configurações do windows
+  ->configurações de seguranca
+   ->aperta o botao direito em diretivas de restricao de software e clica em criar novas diretivas
+    ->clica com o botao direito em regras adicionais
+     ->clica na opcao nova regra de hash
+      ->localiza o executavel 
+       ->Em nivel de seguranca, coloca nao permitido.

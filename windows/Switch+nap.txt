@@ -1,0 +1,69 @@
+http://windowshell.wordpress.com/2011/01/04/a-sample-802-1x-configuration-guide/
+
+Network Devices
+NOTE: This configuration assumes that RADIUS is already configured for on the switch for other uses (i.e. SSH logins). If not, you’ll need to create an association in the NPS server and input the server address and shared secret on the device configuration. Chuck Murison has a great blog on how to do this at: http://murison.wordpress.com/2010/11/11/cisco-radius-configuration-with-server-2008-r2/
+Enable RADIUS for 802.1X (at the global configuration prompt)
+aaa authentication dot1x default group radius
+This sets the device to use RADIUS for 802.1X authentication
+aaa authorization network default group radius
+This sets the device to use RADIUS to authorize users for specific access
+authentication mac-move permit
+This allows machines to be moved while a session is open (device closes old session)
+dot1x system-auth-control
+Globally turns on 802.1X authentication
+On a PER PORT basis, issue the following commands (a range command may be used to configure ports simultaneously):
+mab
+This allows for MAC authentication bypass (where required)
+authentication order dot1x mab
+This tells the network device to use 802.1X before MAB
+authentication priority dot1x mab
+This tells the network device to prioritize 802.1X before MAB
+dot1x pae authenticator
+This prevents the downline client from trying to be a supplicant
+authentication port-control auto
+This turns on 802.1X for the port.
+Port may need to be shut/no shut to force the client to authenticate.
+Follow-on actions
+Set the default VLAN for the port to something else (i.e. a guest or offline vlan). The VLAN is automatically switched to the operations VLAN once authenticated.
+Set a guest vlan for machines that are being imaged and not yet capable of 802.1X authentication. On the interface:
+dot1x guest-vlan <vlan-id>
+Device settings may need to be adjusted to prevent DHCP timeout prior to 802.1X timeout. The following settings were successfully used in the test lab:
+dot1x timeout quiet-period 3
+This setting is the idle time between failed authentication and the next attempt.
+dot1x timeout tx-period 5
+This setting is the idle time between transmissions.
+
+#################################################3
+
+
+Switch Configuration
+Router(config)#dot1x-enable
+Router(config)#enable eth 1/1/1 to 1/1/12
+Router(config)#aaa authentication dot1x default radius
+Router(config)#radius-server host 192.168.100.66 auth-port 1812 acct-port 1813 key 1 <shared secret key> dot1x
+Router(config)#interface eth 1/1/1 to 1/1/12
+Router(config-mif-1/1/1-1/1/12)#dot1x port-control auto
+Router(config)#vlan 10***vlan 10***
+Router(config-vlan-10)#router-interface ve 10
+Router(config-vlan-10)#tagged eth 1/1/13
+Router(config)#vlan 5 ***vlan 5***
+Router(config-vlan-5)#router-interface ve 5
+Router(config-vlan-5)#untagged ethe 1/1/15
+Router(config)#vlan 200***machine vlan ***
+Router(config-vlan-200)#router-interface ve 200
+Router(config-vlan-200)#untagged eth 1/1/24
+Router(config)#vlan 100***server vlan***
+Router(config-vlan-100)#router-interface ve 100
+Router(config-vlan-100)#untagged eth 1/1/23
+Router(config)#interface ve 5
+Router(config-vif-5)#ip address 192.168.102.1 255.255.255.0
+Router(config-vif-5)#ip helper-address 1 192.168.100.66
+Router(config)#interface ve 10
+Router(config-vif-10)#ip address 192.168.101.1 255.255.255.0
+Router(config-vif-10)#ip helper-address 1 192.168.100.66
+Router(config)#interface ve 100
+Router(config-vif-100)#ip address 192.168.100.220 255.255.255.0
+Router(config-vif-100)#ip helper-address 1 192.168.100.66
+Router(config)#interface ve 200
+Router(config-vif-200)# ip address 192.168.200.1 255.255.255.0
+Router(config-vif-100)#ip helper-address 1 192.168.100.66

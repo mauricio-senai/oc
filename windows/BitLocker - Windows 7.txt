@@ -1,0 +1,10 @@
+Como usar o BitLocker
+
+GPO para permitir o BitLocker:
+
+Configurações do Computador-> Políticas -> Modelos Administrativos -> Componentes do Windows -> Criptografia de Unidade de Disco BitLocker -> Unidades do sistema Operacional -> Exibir autenticação Adicional na Inicialização - > Habilitar;
+
+Primeiro, entre no “Menu Iniciar”, “Painel de Controle” e “Sistema e Segurança”.
+Em seguida, clique em “Criptografia de unidade de disco BitLocker”.
+
+Uma nova janela é aberta e nela estarão listadas as unidades de armazenamento presentes no computador. Se você quiser utilizar o BitLocker em um pendrive, lembre-se de que ele precisa estar conectado (e ser reconhecido pelo sistema) para ativar esta função. Agora você deve escolher a unidade de armazenamento que deseja ativar o BitLocker e em seguida clique na opção “Ativar BitLocker”.

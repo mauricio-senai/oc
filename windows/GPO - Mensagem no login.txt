@@ -1,0 +1,11 @@
+Va la na guia GPO, e navegue:
+
+Configurações do computador,
+-->Configurações do windows,
+---->Configurações de segurança,
+------>Políticas locais, 
+-------->Opções de segurança,
+---------->Logon interativo: título da mensagem  para usuários tentando fazer logon:
+---------->Logon interativo: texto de mensagem para usuário tentando fazer logon
+
+é só habilitar e digitar sua mensagem.

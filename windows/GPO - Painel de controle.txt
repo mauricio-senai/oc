@@ -1,0 +1,9 @@
+Botão direito na GPO
+	- Editar
+
+-Configurações do Usuário
+--Políticas
+---Modelos Administrativos
+----Painel de controle
+-----Proibir acesso ao Painel de Controle
+------Ativas

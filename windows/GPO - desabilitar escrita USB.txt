@@ -1,0 +1,7 @@
+GPO
+-Configurações do Computador
+	-Politicas
+		-modelos administrativos
+			-System
+				-Removable Storage Access
+					-...

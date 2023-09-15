@@ -1,0 +1,16 @@
+Habilitando autenticação via Radius/AD
+
+!Criando um usuário local 
+username brain privi 15 secret cisco 
+! Habilitando o aaa 
+aaa new-model 
+! Especificando os métodos de autenticação (primeiro via Radius, depois Local) 
+aaa authentication login default group radius local 
+aaa authentication enable default group radius enable 
+aaa authorization console 
+aaa authorization exec default group radius local 
+! IP do Servidor onde está instalado o IAS (Radius) e a shared Secret 
+radius-server host 192.168.1.41 auth-port 1812 acct-port 1813 key cisco@123 
+! IP que o roteador enviará para o servidor, durante a autenticação 
+ip radius source-interface f0/0 
+!

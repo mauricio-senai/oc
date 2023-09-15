@@ -1,0 +1,9 @@
+Cota de Disco e filtro de arquivos por diretórios ou grupos:
+
+Para instalar o recurso deve-se ir em:
+Adicionar Funções e Recursos -> Serviços de arquivos e Armazenamento -> Serviços de Arquivos e ISCSI -> Gerenciador de Recursos de Servidor De Arquivos.
+
+Para acessar:
+Ferramentas -> Gerenciador de Recursos de Servidor de Arquivos.
+
+OBS.: Em caso de se estar utilizando o serviço de DFS, realizar as mesmas configurações em todos os servidores de arquivos replicantes.
