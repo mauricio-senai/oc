@@ -1,0 +1,3 @@
+O comando mii-tool mostra as informações das interfaces de rede e se estão conectadas.
+
+#mii-tool

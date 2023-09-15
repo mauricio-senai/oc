@@ -1,0 +1,31 @@
+Script de Backup
+			INICIO
+---------------------------------------------------------------------------------
+!#/bin/bash
+#Cria diretório onde será armazenado o backup
+mkdir /backup 
+
+#Copia todo o dirtório /etc pra onde será armazenado o backup dele (/backup)
+cp -R /etc /backup
+
+#Compacta o diretório /etc dentro do /backup pra backup.tar
+tar -zcvf backup.tar /backup/etc
+
+#Apaga o diretório etc antigo que foi feito backup deixando só o compactado
+rm -Rfv /backup/etc
+
+#Transforma o .tar em .tar.gz
+gzip -9 /backup/backup.tar
+
+#move o arquivo backuo.tar.gz pro padrão de nome com data
+mv /backup/backup.tar.gz /backup/backup-$(date +%Y-%m-%d-%H-%M).tar.gz
+
+
+-----------------------------------------------------------------------------------
+			FIM
+
+Botando no Crontab pra executar periodicamente
+
+nano /etc/crontab
+
+* * * 1 * 	root	/home/root/backup.sh

@@ -1,0 +1,37 @@
+Teoria
+https://svnbook-pt-br.googlecode.com/svn/snapshots/1.4/svn.webdav.basic.html
+
+Prática
+https://www.digitalocean.com/community/tutorials/how-to-configure-webdav-access-with-apache-on-ubuntu-12-04
+
+
+#Intalar o apache2-doc
+apt-get install apache2-doc
+
+#Copiar as configurações do DAV para o Apache
+cat /usr/share/doc/apache2-doc/examples/apache2/extra/httpd-dav.conf >> /etc/apache2/sites-available/000-default
+
+# Ativar os módulos para o DAV
+a2enmod auth_digest
+a2enmod authn_core
+a2enmod authn_file
+a2enmod authz_core
+a2enmod authz_user
+a2enmod dav
+a2enmod dav_fs
+a2enmod setenvif
+
+# Em /etc/apache2/sites-available/000-default
+# comentar a linha
+DavLockDB "/var/DavLock"
+
+# Criar os diretorios e usuarios
+mkdir /uploads
+htdigest -c "/user.passwd" DAV-upload admin -> "DAV-upload" é o grupo e "admin" é o usuário
+
+##################################################################
+# Cliente
+# Para acessar instalar o CADAVER
+apt-get install cadaver
+# Acessar com o comando
+cadaver http://[IP_DO_SERVIDOR]/uploads

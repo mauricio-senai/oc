@@ -1,0 +1,48 @@
+https://debian-handbook.info/browse/pt-BR/stable/sect.dhcp.html
+
+10.7. DHCP
+DHCP (para Dynamic Host Configuration Protocol) é um protocolo pelo qual uma máquina pode receber automaticamente sua configuração de rede no momento de inicialização. Isso permite centralizar o gerenciamento de configuração de uma rede, e garante que todas as máquinas recebam configurações similares.
+Um servidor DHCP provê muitos parâmetros relacionados a redes. O mais comum desses é um endereço IP e a rede a qual a máquina pertence, mas ele também pode prover outras informações, como servidores DNS, servidores WINS, servidores NTP, e assim por diante.
+A Internet Software Consortium (também envolvida no desenvolvimento do bind) é a principal autora do servidor DHCP. O pacote Debian correspondente é o isc-dhcp-server.
+10.7.1. Configurando
+Os primeiros elementos que precisam ser editados no arquivo de configuração de um servidor DHCP (/etc/dhcp/dhcpd.conf) são o nome de domínio e os servidores DNS. Se esse servidor é o único na rede local (como definido pela propagação broadcast), a diretiva authoritative também tem que ser ativada (ou descomentada). Também é necessário criar uma seção subnet descrevendo a rede local e a informação de configuração a ser fornecida. O exemplo a seguir descreve uma rede local 192.168.0.0/24 com um roteador em 192.168.0.1 servindo de gateway. Endereços IP disponíveis estão no intervalo de 192.168.0.128 até 192.168.0.254.
+Exemplo 10.15. Trecho do /etc/dhcp/dhcpd.conf
+
+#
+# Sample configuration file for ISC dhcpd for Debian
+#
+
+# The ddns-updates-style parameter controls whether or not the server will
+# attempt to do a DNS update when a lease is confirmed. We default to the
+# behavior of the version 2 packages ('none', since DHCP v2 didn't
+# have support for DDNS.)
+ddns-update-style interim;
+
+# option definitions common to all supported networks...
+option domain-name "internal.falcot.com";
+option domain-name-servers ns.internal.falcot.com;
+
+default-lease-time 600;
+max-lease-time 7200;
+
+# If this DHCP server is the official DHCP server for the local
+# network, the authoritative directive should be uncommented.
+authoritative;
+
+# Use this to send dhcp log messages to a different log file (you also
+# have to hack syslog.conf to complete the redirection).
+log-facility local7;
+
+# My subnet
+subnet 192.168.0.0 netmask 255.255.255.0 {
+    option routers 192.168.0.1;
+    option broadcast-address 192.168.0.255;
+    range 192.168.0.128 192.168.0.254;
+    ddns-domainname "internal.falcot.com";
+}
+10.7.2. DHCP e DNS
+Um recurso legal é o registro automatizado de clientes DHCP em uma zona DNS, para que cada máquina receba um nome significativo (ao invés de alguma coisa impessoal como machine-192-168-0-131.internal.falcot.com). Usar esse recurso requer a configuração do servidor DNS para aceitar atualizações para a zona DNS internal.falcot.com a partir do servidor DHCP, e configurar esse último para submeter atualizações para cada registro.
+No caso do bind, a diretiva allow-update precisa ser adicionada a cada uma das zonas que o servidor DHCP deve editar (uma para o domínio internal.falcot.com, e uma para a zona reversa). Essa diretiva lista o endereço IP que tem permissão para realizar essas atualizações; ela deve então conter os possíveis endereços do servidor DHCP (tanto o endereço local quanto o endereço público, se apropriado).
+allow-update { 127.0.0.1 192.168.0.1 212.94.201.10 !any };
+Esteja atento! Uma zona que pode ser modificada será alterada pelo bind, e esse último irá sobrescrever seus arquivos de configuração em intervalos regulares. Como esse procedimento automatizado produz arquivos que são menos legíveis por humanos que os escritos manualmente, os administradores da Falcot lidam com o domínio internal.falcot.com com um servidor DNS delegado; isso significa que o arquivo de zona falcot.com continua firmemente sob controle manual.
+O trecho da configuração do servidor DHCP acima inclui as diretivas necessárias para atualização da zona DNS: elas são as linhas ddns-update-style interim; e ddns-domain-name "internal.falcot.com"; no bloco que descreve a subrede.

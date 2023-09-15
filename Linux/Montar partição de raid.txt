@@ -1,0 +1,17 @@
+fdisk -l pra ver as partições disponiveis
+df partições montadas e espaços delas
+
+Achar UUID da partição
+#blkid /dev/md0 -> partição
+
+
+pra botar o UUID no fstab
+#blkid /dev/md0 >> /etc/fstab
+
+
+tirar as aspas e o dev md0
+
+e deixar como ta abaixo
+
+
+UUID=asgkaspiu0129u4099d8safbasfo89824e	/diretorio_onde_vai_montar	auto	defaults,errors=remount-ro 0 1

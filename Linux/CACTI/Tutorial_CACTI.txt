@@ -1,0 +1,69 @@
+http://pauloxmachado.blogspot.com.br/2008/08/instalando-e-configurando-cacti.html
+http://www.douglas.wiki.br/doku.php?id=instalacao_e_configuracao_do_cacti_e_de_cliente_cacti_no_debian_squeeze
+http://eduardobecker.blogspot.com.br/2009/10/adicionando-dispositivos-para-monitorar_15.html
+http://openmaniak.com/pt/cacti_other.php
+
+http://www.vivaolinux.com.br/artigo/Instalando-o-Cacti-em-plataforma-Debian/?pagina=4
+
+http://pessoa.eti.br/main/2011/10/18/snmp-instalacao-e-configuracao-no-linux/
+http://aaronwalrath.wordpress.com/2010/06/02/monitoring-windows-server-2008-r2-with-snmp-and-cacti/2/
+
+################################################
+
+Os passos para a instalação do Cacti no Debian dependerão muito do APT-GET, então
+vamos aos passos:
+
+Instalando ferramenta SNMP para monitoramento de equipamento
+#apt-get install snmp snmpd mysql-server apache2 libapache2-mod-php5 php5 php5-snmp libnet-snmp-perl libsnmp15 cacti
+
+
+Será pedido a senha do root do MySQL, escolha uma de sua preferência e guarde-a pois
+vamos utilizar na configuração do Cacti.
+ 
+
+Agora iremos proceder com a configuração final do Cacti para que ele possa estar
+disponível para gerar os gráficos de uso dos ativos de rede que queremos monitorar.
+
+Criando o Virtual Host para o CACTI
+# cat /usr/share/cacti/conf_tempplates/cacti.apache.conf >> /etc/apache2/sites-available/000-default.conf
+
+
+Acesse http://IP_SERVIDOR_CACTI/cacti
+
+Siga os passos abaixo para concluir a configuração:
+
+1- Clique em NEXT;
+2- Escolha a opção NEW INSTALL;
+3- Clique em FINISH (Caso todos os testes de compatibilidade tenha dado Ok);
+4- Faça o login com:
+-> User: admin
+-> Pass: admin
+
+OBS.: Em seguida teremos que alterar a senha do admin.
+
+Por fim, vamos adicionar uma regra no crontab para fazer a coleta de
+informações a cada 5 minutos:
+
+#crontab -e */5 * * * * /usr/share/cacti/site/poller.php
+
+#############################
+Cliente Linux
+
+
+
+#############################
+Cliente CISCO
+
+Cisco_device#conf t
+Cisco_device(config)#snmp-server community "your_community" RO
+
+Uma pequena mais segura configuração:
+
+Cisco_device#conf t
+Cisco_device(config)#snmp-server community "your_community" RO 1
+Cisco_device(config)#access-list 1 permit "snmp_server_IP_address"
+
+##############################
+Criar os graficos no cacti em "Graph Management"
+
+

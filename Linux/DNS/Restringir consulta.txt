@@ -1,0 +1,39 @@
+nano /etc/named.conf.local
+
+Criar uma acl apra redes locais
+
+acl local {
+127.0.0.0/8;
+192.168.0.0/24;
+};
+
+
+view "inside" {
+recursion yes;
+match-clients { local; };
+include "/etc/bind/named.conf.default-zones";
+zone "senai.com" {
+type master;
+file "/etc/bind/db.senai.com.inside";
+};
+};
+
+view "externo" { 
+recursion no;
+additional-from-auth no;
+additional-from-cache no;
+match-clients { any; };
+zone "senai.com" {
+type master;
+file "/etc/bind/db.senai.com.externo";
+};
+
+
+
+Criar DB para cada view, onde no externo botara todos os ips externos do DNAT ou da interface externa.
+
+
+- Excluir linha default-zones do named.conf
+- Acrescentar as 2 linhas a seguir em named.conf.options
+recursion no;
+allow-query-cache{ none;};

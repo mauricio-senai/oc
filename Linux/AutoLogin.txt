@@ -1,0 +1,12 @@
+Auto Login:
+--------------------------------------
+sudo nano /etc/inittab
+Comente a linha:
+1:2345:respawn:/sbin/getty 115200 tty1
+Para:
+#1:2345:respawn:/sbin/getty 115200 tty1
+--------------------------------------
+Abaixo escreva:
+1:2345:respawn:/bin/login -f SEU_USUARIO tty1 </dev/tty1 >/dev/tty1 2>&1
+--------------------------------------
+Reiniciar

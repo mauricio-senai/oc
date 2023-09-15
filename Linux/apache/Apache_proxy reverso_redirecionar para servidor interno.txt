@@ -1,0 +1,14 @@
+sudo a2enmod ssl
+sudo a2enmod proxy
+sudo a2enmod proxy_balancer
+sudo a2enmod proxy_http
+
+vim /etc/apache2/aites-available/000-default.conf
+...
+ProxyPass /site_interno/ http://192.168.0.10:80/
+ProxyPassReverse /site_interno/ http://192.168.0.10:80/
+...
+OBS.: 192.168.0.10 é o ip do outro site interno
+e tem que colocar "/" no final da URL para funcionar
+ex.:   http://siteExterno.com/site_interno/
+...

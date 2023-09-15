@@ -1,0 +1,11 @@
+Primeiramente modifique o arquivo security dentro de/etc/apache2/conf.d
+# vi /etc/apache2/conf-available/security.conf
+
+- E altere a seguintes linhas:
+ServerSignature on para ServerSignature para Off
+
+
+- Agora é só restartar o servidor apache
+# /etc/init.d/apache2 restart ou service apache2 restart
+
+Pronto, agora você verá que o servidor não exibe mais a versão do apache que está rodando.

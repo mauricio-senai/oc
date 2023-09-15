@@ -1,0 +1,25 @@
+Primeiramente habilite o módulo ldap no apache2. (Teste efetuado)
+
+root@debian:~# a2enmod authnz_ldap
+E reinicie o apache.
+
+root@debian:~# /etc/init.d/apache2 restart
+Em seguida, ajuste o apache.
+
+root@debian:~# vi /etc/apache2/sites-avaliable/default
+<Directory /var/www>
+       Options Indexes FollowSymLinks MultiViews
+       AllowOverride None
+       Order allow,deny
+       allow from all
+
+       AuthType Basic
+       AuthBasicProvider ldap
+       AuthzLDAPAuthoritative off
+       AuthName "Acesso Restrito"
+       AuthLDAPURL ldap://192.168.8.2:3268/dc=vinicius,dc=com?sAMAccountName
+       AuthLDAPBindDN cn=apache,ou=usuarios,dc=vinicius,dc=com
+       AuthLDAPBindPassword 1@asdfg
+       Require valid-user
+       #Require peao
+</Directory>

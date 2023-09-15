@@ -1,0 +1,53 @@
+RTZ - Redirecionar sites via DNS - Firewall DNS
+		- Definir o ip para solução dos dominios indicados;
+
+1- Adicionar no "/etc/bind/named.conf.options" a política de resposta 
+
+options {
+    // ... Outras configurações já existentes ...
+    response-policy { zone "seguranca.com"; };
+};
+
+2- Criar em "/etc/bind/named.conf.local" a zona de segurança responsável pela troca dos IPS;
+
+...
+zone "seguranca.com" {
+        type master;
+        file "/etc/bind/db.seguranca.com";
+};
+...
+
+
+
+3- Criar o arquivo de configuração da zona "/etc/bind/db.seguranca.com"
+
+$TTL 3600
+@ IN SOA seguranca.com. root.seguranca.com. (
+     2015103101 ; serial number YYMMDDNN
+     3600       ; refresh 1 hour
+     600        ; retry 10 minutes
+     86400      ; expiry 1 week
+     600 )      ; min ttl 10 minutes
+
+@ IN NS seguranca.com.
+@ IN A	192.168.0.1 ;IP DO SERVIDOR COM O DNS
+hacker.com IN A 192.168.0.99 
+virus.net IN A 192.168.0.99 
+;O site hacker.com vai ser traduzido para 192.168.0.99
+; e o site virus.net será traduzido para 192.168.0.99
+; No IP 192.168.0.99 deve haver um site configurado no apache
+
+4- Reiniciar o Bind
+# service bind9 restart
+
+5- Verificar se a configuração está correta
+# systemctl status bind9.service
+
+6- Testar se funcionou o redirecionamento
+
+ping hacker.com
+64 bytes from 192.168.0.99 (192.168.0.99): icmp_seq=1 ttl=64 time=0.049 ms
+64 bytes from 192.168.0.99 (192.168.0.99): icmp_seq=2 ttl=64 time=0.061 ms
+...
+
+7- Criar o site de segurança no apache no ip 192.168.0.99

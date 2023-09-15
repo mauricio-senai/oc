@@ -1,0 +1,65 @@
+#apt-get install nagios3
+
+#cat /etc/nagios3/apache2.conf >> /etc/apache2/sites-avalaible/default
+
+adicionando dispositivos
+
+#cp /etc/nagios3/conf.d/localhost_nagios2.cfg /etc/nagios3/conf.d/nome_maquina.cfg
+
+#nano /etc/nagios3/conf.d/nome_maquina.cfg
+
+CTR+\ localizar localhost -> substituir pelo hostname do dispositivo
+
+e no IP botar o IP do dispositivo
+
+10.0.230.240/nagios3
+
+nagios3admin
+senha
+
+
+
+adicionando serviços, roteadores e switchs
+
+depois de copiar o localhost pra cada um dos hosts
+ir em /etc/nagios3/conf./services_nagios2.cfg
+
+
+ex pra cada serviço, roteador ou switch
+DNS
+define service {
+	hostgroup_name	DNS-servers
+	service_description	DNS
+	check_comand	check_dns
+	use	generic-service
+	notification_interval	0; set ...........
+}
+
+
+Roteador
+
+define service {
+	hostgroup_name	Router
+	service_description	Router
+	check_comand	check-router-alive
+	use	generic-service
+	notification_interval	0; set ...........
+}
+
+O check_command pode ser verificado na interface web do nagios, em configurações, check commands.
+
+
+Adicionar Grupo de Hosts
+ir em /etc/nagios3/conf./hostgroups_nagios2.cfg
+
+ex:
+
+define hostgroup {
+	hostgroup_name Router (ou DNS-server ou HTTP-server)
+		alias	Router / Cisco (mesmo de cima)
+		members	nome_dispositivos
+	}
+
+
+
+o Nome que ir no arquivo cfg do dispositivo ou host, é o mesmo que vai em members

@@ -1,0 +1,15 @@
+- Criar um index php
+
+vi [CAMINHO DO SITE]/index.php
+
+- Adicionar o código PHP para mostrar a Hora do sistema e o tempo que o servidor está ligado
+
+...
+<?php
+echo "Hora no Servidor: ";
+echo shell_exec('date');
+echo "<br>";
+echo "Tempo ligado: ";
+echo shell_exec('uptime -p');
+?>
+...

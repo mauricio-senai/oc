@@ -1,0 +1,21 @@
+FreeRadius + wpa2 + cisco
+############################
+
+nano /etc/freeradius/clients.conf
+
+client 192.168.1.10/24 {      // IP e mascara do ap
+        secret = senai        // Senha para o AP
+        shortname  = linksys  // Hostname do AP
+}
+###########################
+
+nano /etc/freeradius/users
+
+user_teste   Cleartext-Password := "Senha_teste"
+###########################
+
+nano /etc/freeradius/eap
+
+#               default_eap_type = peap   //Alterar peap por tls
+                default_eap_type = tls
+

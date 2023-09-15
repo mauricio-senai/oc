@@ -1,0 +1,63 @@
+DHCP Failover
+
+Configuração do servidor primario:
+
+#nano /etc/dhcp/dhcpd.conf
+
+option domain-name "example.com";
+authoritative;
+
+failover peer "qualquer_nome"{
+	primary;
+	address ip_do_servidor_primario;
+	port 520;
+	peer address ip_do_servidor_secundario;
+	peer port 520;
+	max-response-delay 60;
+	max-unacked-updates 10;
+	load balance max seconds 3;
+	mclt 3600;
+	split 128;
+}
+
+subnet 172.16.0.0 netmask 255.255.255.0 {
+	option domain-name-servers 172.16.0.10,172.16.0.20;
+	default-lease-time 600;
+	max-lease-time 7200;
+	option routers 172.16.0.254;
+	pool {
+		failover peer "qualquer_nome";
+		range 172.16.0.100 172.16.0.200;
+	}
+}
+
+
+Configuração do servidor secundário
+
+#nano /etc/dhcp/dhcpd.conf
+
+option domain-name "example.com";
+
+failover peer "qualquer_nome"{
+	primary;
+	address ip_do_servidor_secundario;
+	port 520;
+	peer address ip_do_servidor_primario;
+	peer port 520;
+	max-response-delay 60;
+	max-unacked-updates 10;
+	load balance max seconds 3;
+
+subnet 172.16.0.0 netmask 255.255.255.0 {
+	option domain-name-servers 172.16.0.10,172.16.0.20;
+	default-lease-time 600;
+	max-lease-time 7200;
+	option routers 172.16.0.254;
+	pool {
+		failover peer "qualquer_nome";
+		range 172.16.0.100 172.16.0.200;
+	}
+}
+
+#############################################################
+http://labcisco.blogspot.com.br/2015/11/failover-de-servidores-dhcp-redundantes.html

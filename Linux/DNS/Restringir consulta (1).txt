@@ -1,0 +1,55 @@
+http://www.cert.br/docs/whitepapers/dns-recursivo-aberto/
+
+Nesta solução definem-se pelo menos duas views possíveis para o servidor DNS, uma para acesso de clientes específicos e outra para acesso por parte da Internet como um todo. A ordem em que são definidas as views é importante: as views devem ser definidas da mais específica para a mais geral.
+
+No exemplo abaixo foram definidas duas views: interna e externa. Na view interna foi definido que somente algumas máquinas podem fazer consultas recursivas. Na view externa foi explicitamente definido que não se faz recursão e não será enviada nenhuma resposta para as consultas recursivas, através das seguintes diretivas:
+
+        recursion no;
+        additional-from-auth no;
+        additional-from-cache no;
+Segue abaixo um exemplo de configuração para o arquivo named.conf:
+////////////////////////////////////////////////////////////////////
+
+
+// lista de redes ou maquinas que podem fazer consultas recursivas
+acl clientes {
+        localhost;
+        192.0.2.64/26;
+        192.0.2.192/28;
+};
+
+// definicao da view interna -- deve vir antes da view externa
+// esta view permite recursao para as redes da acl clientes
+view "interna" {
+        match-clients { clientes; };
+        recursion yes;
+
+        // dentro desta view sao colocadas as zonas padrao:
+        // ".", localhost, etc, e qualquer outra zona que
+        // seja somente interna para a rede em questao
+};
+
+// definicao da view externa -- deve ser a ultima view definida
+// esta view permite consultas de qualquer rede, mas nao permite
+// consultas recursivas
+view "externa" {
+        match-clients { any; };
+        recursion no;
+        additional-from-auth no;
+        additional-from-cache no;
+
+        // aqui sao colocadas as zonas master
+        //
+        // zone "exemplo.com.br" {
+        //       type master;
+        //       file "master/exemplo.com.br";
+        // };
+
+        // aqui sao colocadas as zonas slave
+        //
+        // zone "exemplo.net.br" {
+        //       type slave;
+        //       file "slave/exemplo.net.br";
+        //       masters { 192.0.2.1; [...;] };
+        // };
+};

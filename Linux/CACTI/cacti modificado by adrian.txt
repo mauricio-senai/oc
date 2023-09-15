@@ -1,0 +1,98 @@
+
+
+
+
+Os passos para a instalação do Cacti no Debian dependerão muito do APT-GET, então
+vamos aos passos:
+
+Instalando ferramenta SNMP para monitoramento de equipamento
+#apt-get install snmp snmpd mysql-server apache2 libapache2-mod-php5 php5 php5-snmp libnet-snmp-perl libsnmp15 cacti
+
+
+Será pedido a senha do root do MySQL, escolha uma de sua preferência e guarde-a pois
+vamos utilizar na configuração do Cacti.
+ 
+
+Agora iremos proceder com a configuração final do Cacti para que ele possa estar
+disponível para gerar os gráficos de uso dos ativos de rede que queremos monitorar.
+
+Criando o Virtual Host para o CACTI
+# cat /usr/share/cacti/conf_tempplates/cacti.apache.conf >> /etc/apache2/sites-available/000-default.conf
+
+
+Acesse http://IP_SERVIDOR_CACTI/cacti
+
+Siga os passos abaixo para concluir a configuração:
+
+1- Clique em NEXT;
+2- Escolha a opção NEW INSTALL;
+3- Clique em FINISH (Caso todos os testes de compatibilidade tenha dado Ok);
+4- Faça o login com:
+-> User: admin
+-> Pass: admin
+
+OBS.: Em seguida teremos que alterar a senha do admin.
+
+Por fim, vamos adicionar uma regra no crontab para fazer a coleta de
+informações a cada 5 minutos:
+
+#crontab -e */5 * * * * /usr/share/cacti/site/poller.php
+
+apt-get -y install snmp snmpd
+cd /etc/snmp/
+mv snmpd.conf snmpd.conf.original
+touch snmpd.conf
+
+Edite o arquivo snmpd.conf com seu editor de textos preferido e adicione as seguintes linhas:
+Conteúdo do arquivo snmpd.conf
+
+rocommunity public
+syslocation “Ip_do Linux” 
+syscontact user@example.com
+
+Uma vez que as linhas de configuração acima tenham sido inseridas no arquivo snmpd.conf, salve o arquivo e saia do editor de textos.
+
+Execute o comando abaixo para que as novas configurações entrem em vigor:
+Comando
+/etc/init.d/snmpd start
+
+Teste
+
+Certifique-se que o serviço SNMP esteja respondendo corretamente, para tanto realize uma consulta da seguinte forma:
+Comando
+snmpwalk -Os -c public -v 1 localhost | head
+
+
+
+
+#############################
+Cliente CISCO
+
+Cisco_device#conf t
+Cisco_device(config)#snmp-server community "your_community" RO
+
+Uma pequena mais segura configuração:
+
+Cisco_device#conf t
+Cisco_device(config)#snmp-server community "your_community" RO 1
+Cisco_device(config)#access-list 1 permit "snmp_server_IP_address"
+
+##############################
+Criar os graficos no cacti em "Graph Management"
+
+
+
+
+
+
+adicionar dispositivo
+dispositivo -> add -> hostname ip, Host Template (windows (version 2 depois), local linux, cisco), ping e snmp uptime -> save
+
+create graph for this host -> seleciona todos os host e os tipos de grafico que quer que apareça> create
+
+graph trees -> add para nova arvore ou clicar em default -> add -> em header mudar pra host, selecionar a maquina - create
+
+criar diferentes tipos de graficos (login de usuario por exemplo)
+graph management - > add -> select graphic template e escolhe o tipo (EX:logged in usser e loader overage), host e create
+http://techmago.sytes.net/wiki/index.php/Cacti_-_Instalacao_e_Configuracao
+

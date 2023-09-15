@@ -1,0 +1,41 @@
+#Autenticação no Site
+
+#dentro da pasta /var/www/site criar .htaccess
+
+vim /var/www/site/.htaccess
+
+AuthType Basic
+AuthName "Entre com o usuario e senha"
+Authuserfile /var/www/site/.htpasswd
+require valid-user
+
+#Criar os usuarios para autenticação
+ 
+htpasswd -c /var/www/site/.htpasswd admin
+#vai solicitar a nova senha do usuário admin
+
+#Editar o arquivo do apache2
+vim /etc/apache/sites_available/default
+
+alias /site  /var/www/site
+
+<directory "/var/www/site"> 
+options indexes FollowSymLinks multiviews
+allowoverride all
+order allow,deny
+allow from all 
+</directory>
+
+
+pra botar autenticando por faixa de IP ou ip especifico também, no arquivo htaccess, embaixo de:
+
+AuthType Basic
+AuthName "Entre com o usuario e senha"
+Authuserfile /var/www/site/.htpasswd
+require valid-user
+
+acrescentar:
+
+Order allow,deny
+Allow from 192.168.2
+Satisfy any

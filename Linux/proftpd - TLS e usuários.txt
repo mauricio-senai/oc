@@ -1,0 +1,58 @@
+******************** CONFIGURANDO PROFTPD COM SSL ********************
+
+Primeiramente devemos instalar o pacote do proftpd.
+#apt-get install proftpd
+
+Entrar no diretorio do Proftpd.
+#cd /etc/proftpd
+
+Depois devemos configurar o arquivo.
+#nano /etc/proftpd/proftpd.conf
+
+Dentro do arquivo configura-lo da seguinte maneira:
+
+            ##########################################
+LINHA 11  - ##UseIPv6	      off                   ## - //Colocar "OFF" no lugar do "ON".
+LINHA 34  - ##DefaultRoot     ~                     ## - //Descomentar.
+LINHA 138 - ##Include         /etc/proftpd/tls.conf ## - //Descomentar.
+            ##########################################
+
+Logo apos as configurações copiar o arquivo tls.conf para o diretorio proftpd.
+# cp /usr/share/proftpd/templates/tls.conf  /etc/proftpd/tls.conf
+
+Dentro do arquivo configura-lo da seguinte maneira:
+#nano /etc/proftpd/tls.conf
+
+           ########################################################### 
+LINHA 10 - ##TLSEngine  	       on                           ## - //Descomentar.
+LINHA 11 - ##TLSLog                    /var/log/proftpd/tls.log     ## - //Descomentar.
+LINHA 11 - ##TLSProtocol               SSLv23                       ## - //Descomentar.
+LINHA 27 - ##TLSRSACertificateFile     /etc/ssl/certs/proftpd.crt   ## - //Descomentar e adicionar o caminho do certificado.
+LINHA 28 - ##TLSRSACertificateKeyFile  /etc/ssl/private/proftpd.key ## - //Descomentar e adicionar o caminho do certificado.
+LINHA 31 - ##TLSCACerticateFile        /etc/proftpd/cert/cacert.pem ## - //Descomentar e adicionar o caminho do certificado.
+LINHA 33 - ##TLSOptions                NoCertRequest EnableDiags    ## - //Descomentar.
+LINHA 45 - ##TLSVerifyClient	       off	                    ## - //Descomentar.
+LINHA 49 - ##TLSRequired 	       on                           ## - //Descomentar.
+           ###########################################################
+
+Logo apos as configurações necessarias vamos restaurar o serviço.
+#service proftpd restart
+
+
+******************** CRIAR O USUARIO FTP NO SEU DEVIDO DIRETORIO ******************
+Para criar o usuario dentro do diretorio.
+#useradd -d /var/www/www.apps4you.com apps4you  ||-> "/var/www/ww.apps4tou.com" é o diretorio home e "apps4you" é o usuario.
+
+Colocando a senha ao usuario.
+#passwd apps4you
+
+******************** Modificando as permissões de usuario e grupo *******************
+
+Para cada usuario ter acesso ao seu devido diretorio quando acessado via ftp devemos modificar as permissões.
+#chown -R apps4you:www-data /var/www/www.apps4you.com
+
+
+******************** Acessar com o cliente por FTP ********************
+
+No cliente na barra do navegador
+#ftp://IP_OU_NOME_DO_DOMINIO_DO_SERVIDOR.

@@ -1,0 +1,4 @@
+(este aplicativo não tem no repositório do debiam)
+aplicativo -> apache direct studio
+
+no debian 9 tem no repositorio o ldap account manager

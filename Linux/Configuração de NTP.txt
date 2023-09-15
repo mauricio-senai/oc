@@ -1,0 +1,50 @@
+******************** Configuração de NTP ********************
+
+     ********** Configuração no SERVIDOR NTP **********
+
+Primeiro instalar os pacotes que seram utilizados.
+#apt-get install ntp ntp-doc
+
+Apos a instalação devemos configurar o arquivo "ntp.conf"
+#nano /etc/ntp.conf       ---- Configurar o mesmo da seguinte maneira!
+
+           ##################################################################
+Linha 21 - # server 127.127.1.0                        			    # - Acrescentar esta linha com o IP de loopback padão do NTP.
+Linha 22 - # server 0.debian.pool.ntp.org iburst			    # - Comentar esta linha.
+Linha 23 - # server 1.debian.pool.ntp.org iburst			    # - Comentar esta linha.
+Linha 25 - # server 2.debian.pool.ntp.org iburst			    # - Comentar esta linha.	
+Linha 26 - # server 3.debian.pool.ntp.org iburst			    # - Comentar esta linha.
+Linha 46 - # restrict 192.168.10.129 mask 255.255.255.128 nomodify notrap   # - Acrescentar a faixa de ip que ira sicronizar a hora com o servidor ntp.
+Linha 47 - # restrict 172.17.20.0 mask 255.255.255.0 nomodify notrap        # - Acrescentar a faixa de ip que ira sicronizar a hora com o servidor ntp.
+           ################################################################## 
+
+Apos feito todas as configurações e so reiniciar o serviço.
+#service ntp restart
+
+#systemctl status ntp.service
+
+
+
+**************************************** Configuração no CLINTE NTP *************************************************
+
+Primeiro instalar os pacotes que seram necessarios.
+#apt-get install ntp ntp-doc ntpdate
+
+Apos a intalação configurar o arquivo "ntp.conf".
+#nano /etc/ntp.conf           ----- Configurar o mesmo da seguinte maneira!
+
+
+           ##################################################################
+Linha 21 - # server 172.17.20.50                       			    # - Acrescentar esta linha com o IP do servidor NTP.
+Linha 22 - # server 0.debian.pool.ntp.org iburst			    # - Comentar esta linha.
+Linha 23 - # server 1.debian.pool.ntp.org iburst			    # - Comentar esta linha.
+Linha 25 - # server 2.debian.pool.ntp.org iburst			    # - Comentar esta linha.	
+Linha 26 - # server 3.debian.pool.ntp.org iburst			    # - Comentar esta linha.
+           ##################################################################
+
+Apos feito todas as configurações e so reiniciar o serviço.
+#service ntp restart
+
+#systemctl status ntp.service
+
+#ntpdate -u 172.17.20.50    ---> Ip do servidor ntp para sincronizar o horario.

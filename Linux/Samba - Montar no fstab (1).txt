@@ -1,0 +1,21 @@
+Para mapear uma pasta smb(SAMBA) Na inicialização do Linux
+pelo arquivo fstab
+
+Instalar o cifs-utils
+#apt-get install cifs-utils
+
+Editar o Arquivo fstab
+#nano /etc/fstab
+
+...
+# 192.168.178.26/compartilhado é o IP do Servidor SAMBA ou AD seguido pelo nome do compartilhamento
+# /mnt/dados é o diretório onde será montado o compartilhameno
+# "joao" é o nome do usuário do samba ou AD
+# "123" é a senha do usuário
+//192.168.178.26/compartilhado  /mnt/dados  cifs username=joao,password=123 0 0
+
+Para testar
+#mount -a
+
+Se for preciso desmontar
+#umount /mnt/dados

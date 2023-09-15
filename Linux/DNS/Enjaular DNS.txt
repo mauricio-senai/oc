@@ -1,0 +1,25 @@
+Presumindo que o seu dns já esteja corretamente configurado, basta fazer:
+
+mkdir -p /var/named/chroot/etc
+mkdir -p /var/named/chroot/dev
+mkdir -p /var/named/chroot/var/cache/bind
+mkdir -p /var/named/chroot/var/run/bind/run
+mv /etc/bind* /var/named/chroot/etc/
+ln -s /var/named/chroot/etc/bind /etc/bind
+mknod /var/named/chroot/dev/null c 1 3
+mknod /var/named/chroot/dev/random c 1 8
+chmod 666 /var/named/chroot/dev/null
+chmod 666 /var/named/chroot/dev/random
+chown -R nobody:nogroup /var/named/chroot/var/*
+chown -R nobody:nogroup /var/named/chroot/etc/bind
+
+
+Alterar o conteúdo do arquivo /etc/default/bind9 para
+
+OPTIONS="-u nobody -t /var/named/chroot"
+
+Pronto, reinicie o bind e confirme:
+
+# ps -efwww | grep named
+ nobody 5618 1 0 22:40 ? 00:00:00 /usr/sbin/named -u
+ nobody -t /var/named/chroot

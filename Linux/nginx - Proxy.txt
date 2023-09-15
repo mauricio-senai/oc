@@ -1,0 +1,44 @@
+****************************************************************
+******************** Configurar PROXY-NGINX ********************
+****************************************************************
+Primeiramente devomos instalar os pacotes necessarios para o bom funcionamento do serviço.
+#apt-get install nginx
+#apt-get install nginx-doc
+
+Logo apos a intalação devemos descompactar o arquivo "Virtual_Hosts" que esta localizado na pasta "/usr/share/doc/nginx-doc/examples" para a pasta do "NGINX".
+#gzip -d /usr/share/doc/nginx-doc/examples/virtual_host   /etc/nginx/virtual_hosts
+
+Entrar no diretorio "NGINX".
+#cd /etc/nginx
+
+Copiar o conteudo do arquivo "Virtual_Host" para o arquivo "default".
+#cat /etc/nginx/virtual_host >> /etc/nginx/sites-enabled/default 
+
+Logo apos a copia entrar no arquivo "Default"e configura-lo da seguinte maneira:
+#nano /etc/nginx/sites-enabled/default
+
+Comentar todo o arquivo ate a "LINHA 216"
+#################################################################################################
+# Linha     ##  Arquivo							 ## Ação                #
+#################################################################################################
+LINHA 217 - ## server {                                                  ## - Normal.
+LINHA 218 - ## listen 443;                                               ## - Normal.
+LINHA 219 - ## server_name www.apps4you.com;                             ## - Trocar "localhost" para o nome do seu dominio.
+LINHA 221 - ## root html;                                                ## - Comentar.
+LINHA 222 - ## Index index,html index.htm;                               ## - Comentar.
+LINHA 224 - ## ssl on;                                                   ## - Normal.
+LINHA 225 - ## ssl_certificate /etc/nginx/ssl/newcert.pem                ## - Colocar o caminho do certificado.
+LINHA 226 - ## ssl_certificate_key /etc/nginx/ssl/newkey.pem             ## - Colocar o caminho do certificado.
+LINHA 228 - ## ssl_session_timeout 5m;                                   ## - Normal.
+LINHA 230 - ## ssl_protocols SSLv3 TLSv1;                                ## - Normal.
+LINHA 231 - ## ssl_ciphers "HIGH:!aNULL:!MD5 or HIGH:!aNULL:!MD5:!3DES"; ## - Normal.
+LINHA 232 - ## ssl_prefer_server_ciphers on;                             ## - Normal.
+LINHA 234 - ## location / {                                              ## - Normal.
+LINHA 235 - ## proxy_pass https://www.apps4you.com;                      ## - Excluir a linha que vem no arquivo e acresenter o caminho que o NGINX deve seguir. 
+LINHA 236 - ## include /etc/nginx/proxy_params;                          ## - Acresentar esta linha com os parametros do proxy nginx.
+LINHA 237 - ## }                                			 ## - Normal. 
+LINHA 238 - ## }							 ## - Normal.
+            ###############################################################
+
+Apos todas as configurações feita restaurar o serviço nginx.
+#service nginx restart

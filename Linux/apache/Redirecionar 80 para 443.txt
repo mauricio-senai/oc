@@ -1,0 +1,16 @@
+dentro arquivo /etc/apache2/sites-available/default
+
+
+NameVirtualHost *:80
+<VirtualHost *:80>
+   ServerName mysite.example.com
+   DocumentRoot /usr/local/apache2/htdocs
+   Redirect permanent /secure https://mysite.example.com/secure
+</VirtualHost>
+
+<VirtualHost _default_:443>
+   ServerName mysite.example.com
+   DocumentRoot /usr/local/apache2/htdocs
+   SSLEngine On
+# etc...
+</VirtualHost>

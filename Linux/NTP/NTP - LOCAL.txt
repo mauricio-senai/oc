@@ -1,0 +1,17 @@
+NTP LOCAL
+
+No arquivo /etc/ntp.conf
+
+Alterar a Linha
+server …
+para
+server 127.127.1.0
+
+e comentar as linhas
+
+server 0.debian.pool…
+server 1.debian.pool…
+server 2.debian.pool…
+server 3.debian.pool…
+
+Para restringir as redes alterar o Restrict

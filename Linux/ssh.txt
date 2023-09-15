@@ -1,0 +1,17 @@
+#apt-get install ssh //no cliente e no servidor
+
+No Cliente
+#ssh-keygen -t rsa com o usuario que ira se logar
+ssh-keygen
+
+
+vai criar um arquivo ~/.ssh/id_rsa.pub
+
+
+mandar esse arquivo pro usuario do servidor
+
+#scp ./ssh/id_ssh.pub usuario2@192.168.1.1:/home/usuario2
+
+no servidor
+#cd /home/usuario2
+#cat id_ssh.pub >> .ssh/authorized_keys

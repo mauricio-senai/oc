@@ -1,0 +1,26 @@
+******************** Configuração de FAIL2BAN ********************
+
+Primeiro instalamos o pacote do Fail2ban
+#apt-get install fail2ban
+
+Logo apos a instalação, iremos configurar o arquivo "jail.conf".
+#nano /etc/fail2ban/jail.conf
+
+            ############################################                
+Linha 30  - # bantime = 60                             # - Modificar com os segundos que voce deseja deixar o cliente bloqueado.
+Linha 35  - # maxretry = 3                             # - Configurar com quantas tentativas os clientes podem tentar a senha.
+Linha 217 - # [apache] 				       # - Nome do serviço que recebera modificações.	 
+Linha 218   #                                          #
+Linha 219 - # enable = true                            # - Por padrão esta linha vem com "false", modificaremos para "true".  
+Linha 220 - # port = http                              # - Padrão. 
+Linha 221 - # filter = apache-auth                     # - Padrão.
+Linha 222 - # logpath = /var/log/apache*/*error.log    # - Padrão.
+Linha 223 - # maxretry = 6                             # - Padrão.
+            ############################################
+
+---> OBS.: Configurar este aquivo de acordo com os serviços que seram bloqueados.
+ 
+Apos todas as configurações necessarias feitas e so reiniciar o serviço.
+#service fail2ban restart
+
+#systemctl status fail2ban.service

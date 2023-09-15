@@ -1,0 +1,80 @@
+OBS: Nastype é o tipo de autenticação de radius (cisco)
+e shortname é o hostname do roteador, arbab no exemplo é o usuario que ele criou
+o arquivo users em /etc/freeradius/users é onde vai ser criado os usuarios que podem usar o radius
+OBS: O SO ONDE VAI ESTAR O PUTTY TEM QUE TA NA MESMA FAIXA DE IP DO ROTEADOR
+No linux
+#sudo apt-get install freeradius
+#cd /etc/freeradius
+
+####### Apenas para IPV6 #######
+#
+#	vim /etc/radiusd.conf
+#
+#	comentar a linha 306
+#	# ipaddr = *
+#	Descomentar a linha 310
+#	ipv6addr = ::
+#	Comentar a linha 349
+#	# ipaddr = *
+#	Descomentar a linha 350
+#	ipv6addr = ::
+#
+################################
+
+#nano clients.conf
+
+adicionar
+client 192.168.179.152 { #IP do roteador
+secret = secretkey -> password do roteador (será o mesmo que o grupo de radius utilizará pra autenticar)
+nastype = cisco
+shortname = hostname_roteador
+}
+
+#sudo nano users -> arquivo onde será configurado os usuarios que acessarão via radius o roteador cada usuario terá a configuração abaixo
+
+arbab  Cleartext-Password := "password" #senha do usuario
+       Service-Type = NAS-Prompt-User,
+       Cisco-AVPair = "shell:priv-lvl=15" #privilegio de acesso
+
+arbab é o nome de usuario que vai logar 
+
+restart o radius
+
+#sudo /etc/init.d/freeradius restart
+
+
+
+
+ROTEADOR
+
+Secretkey é o password configurado no clients.conf no linux e server private é o ip do linux
+
+conf t
+aaa new-model
+aaa group server radius RadiusGrp
+server-private 192.168.179.151 auth-port 1812 acct-port 1813 key secretkey
+exit
+
+ip domain-name xxx
+hostname xxx -> mesmo configurado no clients.conf
+crypto key generate rsa
+
+
+aaa authentication login default group RadiusGrp
+aaa authorization exec default group RadiusGrp
+
+aaa accounting exec default start-stop group RadiusGrp
+aaa accounting system default start-stop group RadiusGrp
+
+line vty 0 4
+transport input telnet ssh
+login authentication default
+
+http://www.cisco.com/c/en/us/support/docs/security-vpn/remote-authentication-dial-user-service-radius/116291-configure-freeradius-00.html
+
+https://supportforums.cisco.com/document/139161/cisco-ios-integration-freeradius-administrator-access
+
+
+#####################################################
+Olhar para IPV6
+http://www.cisco.com/c/en/us/td/docs/ios-xml/ios/sec_usr_aaa/configuration/15-sy/sec-usr-aaa-15-sy-book/ip6-aaa-support.html

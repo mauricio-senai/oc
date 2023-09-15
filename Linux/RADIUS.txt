@@ -1,0 +1,27 @@
+http://www.windowsnetworking.com/articles-tutorials/windows-server-2008/Setting-up-Wi-Fi-Authentication-Windows-Server-2008-Part1.html
+
+http://www.windowsnetworking.com/articles-tutorials/windows-server-2008/Setting-up-Wi-Fi-Authentication-Windows-Server-2008-Part2.html
+
+####################
+CISCO AAA
+
+http://blog.romerojunior.com/cisco/aaa-cisco-microsoft/
+
+http://youritguy.wordpress.com/2009/10/02/aaa-radius-authentication-with-windows-server-2008/
+
+https://supportforums.cisco.com/thread/2199070
+
+http://www.brainwork.com.br/blog/2009/12/10/autenticao-do-roteador-no-ad-windows-server-2008/
+
+http://murison.wordpress.com/2010/11/11/cisco-radius-configuration-with-server-2008-r2/
+
+http://www.cisco.com/en/US/products/ps10315/products_configuration_example09186a0080bfb19a.shtml
+
+http://blog.skufel.net/2012/06/how-to-integrating-cisco-devices-access-with-microsoft-npsradius/
+
+
+
+
+
+LINUX
+http://rbgeek.wordpress.com/2013/01/20/authenticate-the-cisco-devices-using-freeradius-on-ubuntu/

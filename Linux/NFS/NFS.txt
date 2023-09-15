@@ -1,0 +1,35 @@
+Configuração do Servidor NFS
+# apt-get install nfs-kernel-server nfs-common
+
+# nano /etc/exports
+
+inserir no arquivo o caminho da pasta a ser compartilhada
+
+/caminho_pasta_compartilhada ip.do.cliente.ou.da.rede/24 (rw,no_root_squash)  --> leitura e escrita
+/caminho_pasta_compartilhada ip.do.cliente.ou.da.rede/24 (ro,no_root_squash)  --> somente leitura
+
+Reiniciar o serviço
+# exportfs -a
+
+
+Configuração do Cliente NFS
+# apt-get install nfs-common
+
+Criar uma pasta para montar o compartilhamento
+# mkdir /caminho/onde/quer/montar/o/arquivo
+
+Montar o compartilhamento
+# mount ip.do.servidor.nfs:/caminho_pasta_compartilhada /caminho/onde/quer/montar/o/arquivo
+
+Configuração para montar o volume automaticamente
+# nano /etc/fstab
+
+inserir no arquivo(leitura e escrita-rw, somente leitura ro)
+
+ip.do.servidor:/pasta_compartilhada /caminho/onde/quer/montar/o/arquivo nfs rw 0 0  --> leitura e escrita
+ip.do.servidor:/pasta_compartilhada /caminho/onde/quer/montar/o/arquivo nfs ro 0 0  --> Somente leitura
+
+
+##############
+http://debianhelp.co.uk/nfs.htm
+https://www.howtoforge.com/install_nfs_server_and_client_on_debian_wheezy

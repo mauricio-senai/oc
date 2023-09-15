@@ -1,0 +1,1 @@
+echo "127.0.0.1	 facebook.com"	>>	C:\windows\system32\drivers\etc\hosts

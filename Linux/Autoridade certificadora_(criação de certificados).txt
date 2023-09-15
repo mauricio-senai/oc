@@ -1,0 +1,62 @@
+******************** Autoridade Certificadora ( Criação de CA) ********************
+
+Para as configurações necessarias primeiramente devemos instalar o pacote "OPENSSL".
+#apt-get install openssl
+
+Apos a instalação do pacote faremos as configurações necessarias no arquivo "openssl.cnf".
+#nano /etc/ssl/openssl.cnf     ---> Configurar o arquivo da seguinte maneira.
+
+            ##################################################
+Linha 129 - # countryName_default	    = BR             # - Modificar de acordo com o Pais.
+Linha 134 - # stateOrProvinceName_defaul    = RS             # - Modificar de acordo com  o estado.
+Linha 137 - # localityName_default	    = Porto Alegre   # - Acrescentar esta linha ao arquivo e modificar de acordo com a cidade.
+Linha 140 - # 0.organizationName_default    = Apps4you       # - Modificar de acordo com a organização.
+            ##################################################
+
+Logo apos as configurações feitas e so reiniciar o serviço.
+#service openssl restart
+
+#systemctl status openssl.service
+
+Depois de reiniciar o serviço e so criar o certificado
+#/usr/lib/ssl/misc/CA.pl -newca  --> Cria o CA do servidor que ira assinar os outros certificados quando criados.
+
+OBS.: apos a criação do "newca" os proximos certificados criados nao sera necessario criar o "newca" de volta pois sobre escreve a primeira assinatura.
+
+#/usr/lib/ssl/misc/CA.pl -newreq  
+#/usr/lib/ssl/misc/CA.pl -sign   --> Comando utilizado para assinar os certificados.
+
+
+* OBS.::
+* -> É importante que o campo "Common Name" seja preenchido com o endereço correto do servidor (nome e domínio).
+* -> Não é necessário preencher os três últimos campos, por isso colocamos um ponto ('.') em cada um deles.   
+*    Você pode preenchê-los se achar conveniente.
+* -> Teremos como resultado da execução do script CA dois arquivos:
+* -> Newcert.pem, que contém o certificado auto-assinado do servidor; 
+* -> E newkey.pem, que contém a chave privada do certificado protegida por uma senha.Esses dois arquivos estão listados abaixo:
+* -> Se o certificado auto-assinado que foi criado for usado para proteger um serviço de rede, talvez seja necessário remover a senha de acesso à chave privada.
+*    Se a chave privada for mantida com a senha, toda vez que o serviço que a utilizar for inicializado, a senha terá que ser digitada pelo administrador. 
+*    Para remover a senha de acesso à chave privada execute o seguinte comando:
+*
+* #openssl rsa -in newkey.pem -out openkey.pem  
+*  Enter pass phrase for newkey.pem:secret
+*  writing RSA key
+*
+* -> Esse comando vai abrir o arquivo da chave privada, para isso ele pedirá a mesma senha que você digitou no início da geração do certificado. 
+* Ele criará então um novo arquivo, contendo a mesma chave privada, porém sem senha de acesso, que será guardado no openkey.pem ou outro arquivo especificado na linha de comando. 
+
+
+
+******************* Transferencia de arquivos entre LINUX ******************
+
+Transferir arquivos de um linux pro outro.
+
+scp /caminho/real/do/arquivo root@IP:/caminho/local
+
+**********************************************************************************************************
+* OBS.: 										                 *
+* -> scp                      -- sigla padrão.							         *
+* -> /caminho/real/do/arquivo -- e aonde ele se encontra nesse momento.                                  *
+* -> root@ip:                 -- e root mais o ip do servidor que sera mandado os arquivos.              *
+* -> /caminho/local           -- e o diretorio no outro servidor que ira armazenar esses arquivos.       *
+**********************************************************************************************************

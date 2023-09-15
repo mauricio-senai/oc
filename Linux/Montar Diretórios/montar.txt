@@ -1,0 +1,18 @@
+apt-get install cifs-utils
+
+nano /etc/rc.local
+-> Adicionar a linha
+	mount.cifs //10.0.230.253/suporte /root/rede -o user=suporte,pass=1@asdfg
+
+nano /etc/crontab
+-> Adicionar a linha
+
+# m h dom mon dow  user    command
+*/1 *   * *    *   root    rm -Rf /root/rede; cp -Rf /home/webmaster /root/rede
+
+opções de comando
+tar -cf webmaster.tar /home/webmaster ; gzip -9 webmaster.tar ; mv webmaster.tar.gz /root/rede
+
+
+script
+http://www.cyberciti.biz/faq/linux-unix-formatting-dates-for-display/

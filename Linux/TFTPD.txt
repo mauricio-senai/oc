@@ -1,0 +1,16 @@
+apt-get install tftpd-hpa tftp
+
+
+No arquivo /etc/default/tftp-hpa deixar assim:
+TFTP_USERNAME="tftp" //verificar se esse usuario existe
+TFTP_DIRECTORY="/backup" //dar permissão 777  pra esse diretório
+TFTP_ADDRESS="0.0.0.0:69"
+OPTIONS="--secure --create -v"	//-v é opcional
+RUn_DAEMON = "yes"  //Linha Opcional
+
+E NO cisco
+
+copy running-config tftp
+
+#IP_DO_SERVIDOR_TFTP
+#nome_do_arquivo_pra_salvar

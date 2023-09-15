@@ -1,0 +1,10 @@
+Instalacao do Splunk:
+- Descompactar: tar xvzf splunk.tgz -C /opt
+- Entrar no diretório: cd /opt/splunk/bin
+- Iniciar o Splunk: ./splunk start
+- Aceitar a licensa: ./splunk start --accept-license
+- Criar um nome de administrador para o splunk: admin
+- Criar uma senha de administrador para o splunk: admin
+- Adicionar o splunk para iniciar automaticamente: sudo ./splunk enable boot-start -user root
+
+	

@@ -1,0 +1,48 @@
+1 ### Instalar os serviços
+$ sudo aptitude install bind9 isc-dhcp-server
+
+#### Configuraçao DNS ####
+
+2 ### Criar a Chave RNDC
+/usr/sbin/rndc-confgen -a
+
+3 ### Em /etc/bind/named.conf
+
+include "/etc/bind/rndc-key";  
+
+4 ### Em /etc/bind/named.conf.local
+
+zone "bigdinosaur.org" {  
+    type master;
+    file "/var/cache/bind/db.bigdinosaur.org";
+    allow-update { key rndc-key; };
+};
+
+zone "10.10.10.in-addr.arpa" {  
+    type master;
+    file "/var/cache/bind/db.10.10.10";
+    allow-update { key rndc-key; };
+};
+
+
+5 ### Criar os Arquivos db.. em /var/cache/db...
+
+#### Configurar o ISC-DHCP-SERVER ####
+
+6 ### Em /etc/dhcp/dhcpd.conf
+ddns-updates on;  
+ddns-update-style interim;
+ddns-domainname "bigdinosaur.org.";
+ddns-rev-domainname "in-addr.arpa.";
+   
+include "/etc/bind/rndc.key";
+
+zone bigdinosaur.org. {  
+    primary localhost;
+    key rndc-key;
+    }
+
+zone 10.10.10.in-addr.arpa. {  
+    primary localhost;
+    key rndc-key;
+    }

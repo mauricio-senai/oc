@@ -1,0 +1,47 @@
+Na inicialização do grub aperte E
+
+na linha ro single, apague ro single e bote 
+
+#rw init=/bin/bash
+
+e de control + X
+
+depois de inicializar digite:
+
+#fdisk -l
+#mount -o remount,rs /dev/sda1 /
+#passwd
+
+OBS: no arquivo do grub o / é no tab e na inicialização de sistema é no ;
+
+
+
+
+Segundo método
+
+
+CD live
+
+entre no modo live do cd (no vmware bote o cd como boot apertando F2 e entrando na bios)
+no sistema ja crie um diretorio na raiz
+ex: particao
+
+depois desmonte o disco
+
+umount /dev/sda1
+
+e monte no diretorio criado
+
+#mount /dev/sda1 /particao
+
+agora edite o arquivo shadow original deletando a senha criptografada do root (dos primeiros : ate o proximo :)
+
+#nano /particao/etc/shadow
+
+Linha original do arquivo, : 
+
+root:$1$CLDZNZCB$PbOINV7W3sMIvlaTsrkLi1:13360:0:99999:7::: 
+
+Linha modificada (sem a senha): 
+
+root::13360:0:99999:7:::
