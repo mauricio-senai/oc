@@ -1,0 +1,63 @@
+Banco de Dados (MariaDB)
+
+-Iniciar o DB:
+systemctl start mariadb
+
+-Entrar no banco de dados:
+mariadb -u root -p
+### Digitar a senha do Root ###
+
+
+
+-Listar os DB:
+show databases;
+
+-Criar DB:
+CREATE DATABASE senai;
+
+-Entrar no BD:
+use senai;
+
+- Criar usuário
+CREATE USER 'novousuario'@'localhost' IDENTIFIED BY 'minhasenha';
+
+- Dar permissão de acesso ao usuário
+GRANT ALL PRIVILEGES ON * . * TO 'novousuario'@'localhost';
+
+-Criar uma tabela:
+CREATE TABLE user (ID_user INT NOT NULL AUTO_INCREMENT PRIMARY KEY, nome varchar(30), sobrenome varchar(40), idade int(3));
+
+-Inserir Dados na tabela:
+INSERT INTO user (nome, sobrenome, idade) VALUES ("Mauricio", "Cerqueira", "40");
+
+-Listar todos os registros da tabela:
+SELECT * FROM user;
+
+-Listar registros selecionados da tabela:
+SELECT nome, sobrenome FROM user WHERE idade=40;
+
+-Criar mais colunas em uma tabela existente:
+ALTER TABLE user ADD COLUMN (senha varchar(255));
+
+-Alterar um registro ou inserir mais dados em um registro existente:
+UPDATE user SET senha=PASSWORD('Senha_do_Usuario') WHERE nome="Mauricio";
+
+-Listar todos os registros da tabela:
+SELECT * FROM user;
+
+#################################################################
+
+-Criar ou deletar um banco;
+https://mariadb.com/kb/en/create-table/
+
+-Alterar a tabela:
+https://mariadb.com/kb/en/alter-table/
+
+-Inserir Dados:
+https://mariadb.com/kb/en/insert/
+
+-Campo com senha criptpografada:
+https://mariadb.com/kb/en/password/
+
+-Alterar registros:
+https://mariadb.com/kb/en/update/
