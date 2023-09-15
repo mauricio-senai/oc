@@ -1,0 +1,114 @@
+ACL
+
+endereço de origem, destino, protocolo e porta
+
+OS tres Ps para utilizar ACLs
+Interface por protocolo (IP IPX por exemplO)
+Por Interface (fa0/0)
+Por direção (In ou OUT (inbout ou outbout))
+
+ACL de entrada = o pacote é bloqueado na entrada (menos processamento)
+ACL de saida = o pacote é roteado para ser bloqueado na saida (+ processamento)
+mas cada caso é um caso.
+
+- As ACLs nao funcionam em pacotes com origem no proprio roteador
+- Funcionam em ordem sequencial, o que é mais especifico fica no topo. De cima para baixo uma de cada vez
+- Uma acl pode ficar em varias interfaces, mas só ha uma interface por protocolo ou direção
+
+
+A acl tem deny implicito, permit o que quer e no final o deny all implicito
+Se começar negando tem que botar um permit any no final
+
+Tipos de ACL
+Padrão
+
+Bloqueia ou permite endereços de ip de origem
+1 a 99 1300 a 1999
+Estendidas
+IP origeme  destino, portas tcp e udp de origem e destino
+100 a 199 2000 2699
+
+
+ACL nomeada(padrao ou estendida)
+Voce pode adicionar ou excluir dentro da ACL
+
+
+Onde colocar a acl
+- onde tenha o maior impacto de eficiencia, com menor processamento possivel
+
+Estendidas
+mas proximas da origem do tráfego negado. Dessa forma, o trafego indesejavel e filtrado sem atravessar a infraestrutura de rede.
+
+Padrão
+Mais próximas possiveis do destino
+
+estendida - origem
+padrão - destino
+
+
+Boas praticas
+
+Botar descrições
+Editor de texto para criar editar e salvar ACLs. (biblioteca de ACL)
+Não botar acl em ambiente de produção
+botar o deny any ira gerar log, pois o deny implicito nao gera log
+
+
+Comandos
+Padrão
+access-list 1 permit ip_origem mascara_coringa
+access-list 1 deny any
+
+exemplo
+
+access-list 2 deny host 192.168.10.1 - bloqueia esse host
+access-list 2 permit 192.168.10.0 0.0.0.255 - permite essa rede 192.168.10.0
+access-list 2 deny 192.168.0.0 0.0.255.255 - bloqueia todas as redes 192.168
+access-list 2 permit 192.0.0.0 0.255.255.255 - permite todo trafego vindo da internet que seja classe C
+
+
+Sintaxe
+
+access-list numer [deny|permit|remark] IP_origem [source wildcard] [log]
+remark - pra gerar comentarios
+
+ACL padrão não permite ser editada
+
+etapa 1 - criar a acl
+etapa 2 - selecionar a interface
+interface fa0/0
+etapa 3 - ip acces-group numero_acl out/in (vai depende se o trafego ta chegando ou saindo)
+
+(pra excluir uma acl tirar da interface primeiro)
+
+trabalha na camada 3
+
+
+Pra telnet
+
+access-list 21 permit 192.168.10.0 0.0.0.255
+access-list 21 deny any
+line vty 0 4
+password secret
+login
+access-class 21 in (aqui é in sempre)
+
+
+comentar acl
+
+access-list 1 remark permit only traffic net lan 192.168.0.0
+access-list 1 permit 192.168.0.0 0.0.0.255
+
+nomeada
+
+ip access-list standard SEM_ACESSO
+deny host 192.168.11.10
+permit 192.168.11.0 0.0.0.255
+
+
+Sera IN ou OUT conforme a origem do tráfego, de onde ele vem e se ele esta entrando (IN), ou estiver saidno (out).
+REFERENCIAL É O TRAFEGO A SER TRATADO pra botar in ou out, exemplo bloquear trafego que ta chegando da internet, pela interface se0/0/0 botar IN.
+
+show access-lists - mostra as acl configurada
+
+

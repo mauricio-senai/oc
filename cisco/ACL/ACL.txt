@@ -1,0 +1,13 @@
+
+access-list 101 deny   icmp any 200.200.200.0 0.0.0.3 echo
+access-list 101 deny   icmp any 200.200.200.0 0.0.0.3 echo-reply
+access-list 101 deny tcp any 200.200.200.0 0.0.0.3 eq telnet
+access-list 101 permit ip any  any 
+
+
+
+
+a primeira e a segunda é pra bloquear ICMp vindo de qualquer lugar pra rede 200.200.200.0 
+a terceira é pra bloquear telnet 
+
+https://www.cisco.com/c/pt_br/support/docs/ip/access-lists/26448-ACLsamples.html

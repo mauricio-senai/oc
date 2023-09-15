@@ -1,0 +1,30 @@
+Criar uma interface para conexão com outras máquinas virtuais dentro do VMWare
+
+Interfaces da OVA:
+Flat - promiscuous mode
+Flat1 - promiscuous mode
+SNAT - promiscuous mode
+INT - Tudo negado (promiscuos, mac, forget)
+------------------------------------------------------
+
+Interfaces Promiscuous mode
+
+1- Criar uma interface de rede virtual
+2- edit
+3- security
+4- promiscuous mode (ativar)
+
+OBS.:Para a prova do worldSkills 2015 foram criadas duas FLat e uma SNAT com promiscuous mode
+
+------------------------------------------------------
+Para interfaces internas configurar tudo como reject
+1- Criar uma interface de rede virtual
+2- edit
+3- security
+4- promiscuous mode (desativar)
+5- MAC (desativar)
+6- Foorget(desativar)
+------------------------------------------------------
+Processador
+4 sockets 
+2 core
