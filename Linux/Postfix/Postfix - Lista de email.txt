@@ -1,0 +1,27 @@
+Criar uma lista de email no Postfix
+
+1- Adicionar no /etc/postfix/main.cf
+
+# vi /etc/postfix/main.cf
+...
+virtual_alias_maps = hash:/etc/postfix/virtual
+...
+
+2- Criar o arquivo virtual para inserir as listas de email
+
+# vi /etc/postfix/virtual
+...
+todos@example.com user1@example.com, user2@example.com, user3@example.com
+impares@example.com user1@example.com, user3@example.com
+...
+
+OBS.: no arquivo "virtual" foram criadas duas listasde email uma "todos@example.com" com o endereço de todos os funcionarios e uma lista "impares@example.com" com os endereços impares;
+
+3- Criar o arquivo /etc/postfix/virtual.db
+# postmap hash:/etc/postfix/virtual
+
+4- Reiniciar o postfix
+# service postfix restart
+
+5- Verificar se não ocorreram erros
+# systemctl status postfix.service

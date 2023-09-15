@@ -1,0 +1,41 @@
+##Protocolo de Conexão
+#TIPO DE PROTOCOLO
+proto udp
+
+# Porta do servico
+# PORTA USADA
+port 1194
+
+#Drive da interface
+dev tun # DRIVER DA INTERFACE DE REDE "TUN" INTERFACE VIRTUAL
+# Atribui endereços dinâmicos a vários clientes, ips para o túnel VPN
+server 192.168.0.0 255.255.255.0 # FAIXA DE IPS QUE SERÁ DISTRIBUIDOS PARA OS CLIENTES VPN
+# Acrescenta rotas aos clientes, informações da rede local
+push "route 10.0.0.0 255.255.0.0" # TROQUE PARA SUA REDE LOCAL (REAL)
+push "dhcp-option DNS 10.0.1.34" # TROQUE PARA DNS LOCAL (REAL)
+#push "dhcp-option WINS 10.0.1.34" # SE TIVER SERVIDOR WINS
+# Configurações adicionais no cliente
+push "ping 10"
+push "ping-restart 60"
+# Rotas do servidor
+route 192.168.0.0 255.255.255.0 # ROTA DO CLIENTE VPN (IGUAL DHCP)
+# Compactacao lib LZO
+comp-lzo #COMPACTADOR DAS INFORMAÇÕES ATRAVES DO TÚNEL, FALAREI MAIS SOBRE ESSA EM BAIXO
+keepalive 10 120 # O PRIMEIRO NUMERO É O INTERVALO DE PINGS E O SEGUNDO O TIMEOUT DEPOIS QUE A VPN É REINICIADA
+float # ESSA OPCAO É PARA IPS DINAMICOS, MESMO QUE O IP MUDE A VPN CONTINUA COM O TUNEL ABERTO
+ifconfig-pool-persist /etc/openvpn/ipp.txt #ARMAZENA A LISTA DE IPS USADA PELOS CLIENTES, SEMPRE QUE O CLIENTE VOLTA A LOGAR ELE RECEBE O MESMO IP
+max-clients 10 # LIMITE MAXIMO DE CLIENTE LOGADOS AO MESMO TEMPO
+persist-key #FAZ COM QUE O DAEMON MANTENHA A INTERFACE TUN ABERTA, QUANDO A VPN É REINICIADA
+persist-tun # FAZ COM QUE O DAEMON MANTENHA A INTERFACE TUN ABERTA, QUANDO A VPN É REINICIADAr
+log-append /var/log/openvpn.log # LOG DA VPN
+verb 6
+# Servidor TLS
+tls-server
+# Chaves necessárias (VERIFICAR NOME DOS ARQUIVOS)
+dh /etc/openvpn/keys/dh1024.pem #CHAVES QUE FORAM CRIADAS
+ca /etc/openvpn/keys/ca.crt #CHAVES QUE FORAM CRIADAS
+cert /etc/openvpn/keys/server.crt #CHAVES QUE FORAM CRIADAS
+key /etc/openvpn/keys/server.key #CHAVES QUE FORAM CRIADAS
+# Chave secreta do servidor
+tls-auth /etc/openvpn/keys/chave.key #CHAVES QUE FORAM CRIADAS
+status /var/log/openvpn.stats #LOG DE STATUS DA VPN

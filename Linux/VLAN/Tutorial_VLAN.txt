@@ -1,0 +1,22 @@
+No linux
+
+# apt-get install vlan
+
+para ativar o modulo 8021q permanentemente
+# echo 8021q >> /etc/modules
+
+Para ativar o modulo 8021q sem reiniciar
+#modprobe 8021q
+
+Para testar(tem que retornar o numero do precesso)
+#lsmod | grep 8021q
+
+No arquivo /etc/network/interfaces
+
+...
+auto eth0.10
+iface eth0.10 inet static
+  address 192.168.2.1
+  netmask 255.255.255.0
+#  vlan-raw-device eth0
+...

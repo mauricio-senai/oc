@@ -1,0 +1,48 @@
+No Roteador
+
+(This example enables the router to send all traps to the host myhost.cisco.com with the community string public:)
+Site com as opções do comando:
+http://www.cisco.com/en/US/tech/tk648/tk362/technologies_tech_note09186a0080094a05.shtml
+
+snmp-server enable traps
+snmp-server host IP_DO_SERVIDOR_TRAP public -> GRUPO_SNMP
+
+-----------------------------------------------------------------
+
+No Linux
+
+aptitude install snmp snmpd snmptt
+
+Editar /etc/snmp/snmptrapd.conf
+Inseriando as linhas:
+ --------------------------------------
+| # To accept all traps                |
+| disableAuthorization yes             |
+| # To handle traps with snmptt        |
+| traphandle default /usr/sbin/snmptt  |
+ --------------------------------------
+
+Editar /etc/default/snmpd 
+
+Alterar
+	TRAPDRUN=no
+Para
+	TRAPDRUN=yes
+
+
+e altere
+	TRAPDOPTS='-Lsd -p /var/run/snmptrapd.pid'
+para
+	TRAPDOPTS='-On -Lsd -p /var/run/snmptrapd.pid'
+
+----------------------------------------------------------------
+Editar /etc/snmp/snmptt.ini
+
+Alterar
+	unknown_trap_log_enable = 0
+para
+	unknown_trap_log_enable = 1
+
+
+Alterar Local do LOG -> Linha 288
+log_file = /var/log/snmptt/rtgo.log

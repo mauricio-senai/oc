@@ -1,0 +1,55 @@
+################# Tuto Mega flash ######################
+
+# apt-get install rsyslog
+
+# nano /etc/rsyslog.conf
+	{	Descomentar linhas de recebimento UDP
+			$ModLoad imudp
+			$UDPServerRun 514
+
+		Adicionar $template log-mano,"%HOSTNAME%-%$DAY%-%$MONTH%-%$YEAR%"
+
+Abrir no navegador
+
+http://seu_ip/loganalyzer/src/install.php
+(Se der errado tentar o dpkg-reconfigure rsyslog-mysql)
+
+################ No cliente Linux ######################
+adicionar a linha no inicio do arquivo /etc/rsyslog.conf
+
+#vim /etc/rsyslog.conf
+
+	*.* @ip_do_servidor:514
+
+
+
+###### Exercicio #######
+
+- Instalar um servidor de log que receba os logs vindos do firewall FW
+
+e do roteador RTSP. O arquivo de log recebido do firewall deverá ser 
+
+nomeado de fw-[data].log (onde [data] é o dia atual) e do roteador 
+
+RTSP deverá ser rtsp-[mes].log (onde [mes] é o número do mês atual).
+
+- A rotação dos logs deverá obedecer as seguintes regras:
+
+• 2 arquivos ou
+
+• 10Mb.
+
+
+http://www.dicas-l.com.br/arquivo/log_remoto_com_o_rsyslog.php#.UjL1I8Y3sYE
+http://www.vivaolinux.com.br/artigo/Rsyslog-Gerenciamento-centralizado-de-logs/?pagina=1
+http://hackbusters.blogspot.com.br/2009/07/gerenciando-logs-com-o-rsyslog.html
+
+http://www.howtoforge.com/centralized-rsyslog-server-monitoring
+
+http://www.aboutdebian.com/syslog.htm
+
+http://www.vivaolinux.com.br/artigo/FwLogWatch-Analisando-Registros-do-IPtables?pagina=4
+
+
+http://www.projectenvision.com/blog/Configure-Cisco-Logging-to-Rsyslog-on-Debian
+http://gnulinuxbr.com/2009/09/10/configurando-o-rsyslog-clienteservidor/

@@ -1,0 +1,57 @@
+******************** Configuração do OPENVPN com CA ********************
+
+Primeiro de tudo instalar o pacote do "OPENVPN".
+#apt-get install openvpn
+
+Logo apos a intalação devemos tirar o ".gz" do arquivo "server.conf" e leva-lo ao diretorio "openvpn".
+#gunzip -c /usr/share/doc/openvpn/examples/sample-config-files/server.conf.gz >> /etc/openvpn/server.conf
+
+Apos mover o arquivo "server.conf" e so fazer as modificações necessarias.
+#nano /etc/openvpn/server.conf        --- Configurar o arquivo da seguinte maneira:
+
+
+            ############################################
+Linha 25  - ## local 32.54.87.115		      ## - Descomentar caso tenha mais de uma rede no mesmo servidor e colocar o IP que sera a ligação do cliente com o openvpn.
+Linha 78  - ## ca /etc/openvpn/cacert.pem             ## - Modificar e colocar o caminho do certificado.
+Linha 79  - ## cert /etc/openvpn/server.crt           ## - Modificar e colocar o caminho do certificado.
+Linha 80  - ## key /etc/openvpn/server.key            ## - Modificar e colocar o caminho do certificado.
+Linha 87  - ## dh  /etc/openvpn/dh1024.pem            ## - Modificar e colocar o caminho do certificado.
+Linha 96  - ## server 10.2.1.0 255.255.255.192        ## - Modificar com o faixa de Ip que voce deseja que seu cliente pegue.
+Linha 136 - ## push "route 172.17.20.0 255.255.255.0" ## - Descomentar e Modificar com Ip que voce deseja que seu cliente veja.
+Linha 204 - ## client-to-client                       ## - Descomentar.
+            ############################################
+
+Apos todas as configurações feitas e so reiniciar o serviço.
+#service openvpn restart
+
+systemctl status openvpn.service
+
+Caso este comando não funcione e so aplicar este outro.
+#openvpn --config /etc/openvpn/server.conf
+
+******************** Configuração do OPENVPN no cliente *******************
+
+Primeiramente instalamos o pacote OPENVPN.
+#apt-get install openvpn.
+
+Apos a intalação devemos copiar o arquivo de configuração.
+#cp /usr/share/doc/openvpn/examples/sample-config-files/client.conf  /etc/openvpn
+
+Apos a copia do arquivo devemos modificar de acordo com o que precisamos.
+#nano /etc/openvpn/client.conf
+
+            ###################################
+Linha 42  - ## remote 172.17.20.1 1194       ## - Modificar com o Ip do seu servidor Openvpn.
+Linha 88  - ## ca /etc/openvpn/cacert.pem    ## - Modificar e colocar o caminho do certificado.
+Linha 89  - ## cert /etc/openvpn/client.crt  ## - Modificar e colocar o caminho do certificado.
+Linha 90  - ## key /etc/openvpn/client.key   ## - Modificar e colocar o caminho do certificado.
+Linha 103 - ## ns-cert-type server	     ## - Comentar esta linha caso o certicado seja atribuido de outro servidor destinto.
+            ###################################
+
+Apos todas as configurações necessarias feitas e so reiniciar o serviço.
+#service openvpn restart
+
+#systemctl status openvpn.service
+
+Caso este comando na funcione e so aplicar este outro.
+#openvpn --config /etc/openvpn/client.conf

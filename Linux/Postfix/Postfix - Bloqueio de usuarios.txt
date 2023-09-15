@@ -1,0 +1,25 @@
+Broquear usuários de enviar e receber emails no postfix
+
+1- Criar o arquivo com a lista de usuários bloqueados
+
+# vi /etc/postfix/permissoes
+...
+joe REJECT
+joe@mail.example.com REJECT
+...
+
+2- Adicionar no arquivo "/etc/postfix/main.cf"
+# vi /etc/postfix/main.cf
+
+...
+smtpd_sender_restrictions = check_sender_access hash:/etc/postfix/permissoes
+...
+
+3- Criar o arquivo /etc/postfix/permissoes.db
+# postmap hash:/etc/postfix/permissoes
+
+4- Reiniciar o postfix
+# service postfix restart
+
+5- Verificar se não ocorreram erros
+# systemctl status postfix.service

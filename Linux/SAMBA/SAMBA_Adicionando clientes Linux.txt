@@ -1,0 +1,88 @@
+Logando clientes Linux no domínio
+
+Embora a configuração seja um pouco mais complexa, é possível também logar clientes Linux no domínio, já que o Samba pode ser usado como cliente de um PDC Samba (ou de um PDC Windows). Isso permite que a estação Linux acesse os recursos do domínio normalmente e utilize o PDC como um servidor de autenticação na hora de compartilhar arquivos com a rede, da mesma forma que as máquinas Windows.
+
+Com isso, você elimina a necessidade de cadastrar os logins de usuários em todas as máquinas Linux que precisarem compartilhar arquivos, já que todo o processo de autenticação é centralizado no servidor. O primeiro passo é cadastrar o nome da máquina no servidor PDC, usando os três comandos que já vimos:
+
+# useradd -d /dev/null -s /bin/false nome$
+# passwd -l nome$
+# smbpasswd -a -m nome
+
+No caso dos clientes Linux, vale o nome definido durante a instalação do sistema, que fica armazenado dentro do arquivo "/etc/hostname".
+
+Esta é a única configuração que precisa ser feita no servidor. Os passos seguintes são feitos no próprio cliente.
+
+Comece fazendo uma instalação normal do Samba, instalando os pacotes "samba" e "samba-client" (ou smbclient) através do gerenciador de pacotes, da mesma forma que faria ao instalar um servidor Samba para a rede.
+
+É necessário cadastrar pelo menos uma conta de usuário no Samba (da estação), com a mesma senha definida no sistema, usando o comando smbpasswd, como em:
+
+# smbpasswd -a joao
+
+Com o Samba instalado, edite o arquivo smb.conf, deixando-o como este modelo:
+
+---------------------------------------------------------
+[global]
+netbios name = M5
+workgroup = Dominio
+security = domain
+encrypt passwords = yes
+
+password server = 192.168.1.254
+username map = /etc/samba/smbusermap
+
+[arquivos]
+path = /home/arquivos
+writable = yes
+--------------------------------------------------------
+
+A seção global deve conter as linhas "security = domain" (como citei anteriormente, este é o nível de segurança que permite que o Samba atue como cliente de um PDC), "encrypt passwords = yes" e a linha "password server =" que indica o endereço IP (ou o nome netbios) do servidor PDC.
+
+É importante também que a linha "workgroup" inclua o nome correto do domínio e a linha "netbios name" contenha o nome da máquina (cliente), como cadastrado no servidor e salvo no arquivo "/etc/hostname". Você pode incluir também os compartilhamentos de arquivos e impressoras desejados, como no caso do compartilhamento [arquivos] que incluí no exemplo.
+
+Depois de salvar o arquivo e reiniciar o serviço, é hora de adicionar a máquina ao domínio, o que é feito usando o comando abaixo (executado na estação):
+
+# net join -U root
+
+Password:
+Joined domain DOMINIO.
+
+A senha de root solicitada é a senha de root cadastrada no servidor, que é checada ao cadastrar a estação como uma forma de provar que você é o administrador da rede. Você pode também criar um usuário administrativo com poderes para adicionar as máquinas ao domínio (evitando assim o uso da conta de root), dando a ela o privilégio "SeMachineAccountPrivilege", como vimos no tópico anterior.
+
+Se o comando exibir a mensagem "Joined domain DOMINIO." sem solicitar a senha, rode-o novamente, pois isso acontece quando (por qualquer motivo) ele não conseguiu contactar o servidor. Se ele reclamar que a senha está incorreta, ou exibir um erro de permissão, verifique a configuração do servidor. Isso acontece, por exemplo, quando a linha "invalid users = root" está presente na configuração.
+
+Uma vez inserida no domínio, a instância do Samba rodando na estação passará a encaminhar todos os pedidos de autenticação para o servidor. Se o servidor autoriza o acesso, então o servidor Samba local permite o acesso ao compartilhamento. Com isso, um novo usuário cadastrado no servidor PDC, ganha acesso também aos compartilhamentos do estação, sem que você precise cadastrá-lo duas vezes.
+
+Para que isso funcione, é necessário duas coisas. Em primeiro lugar, é necessário especificar o endereço IP ou nome do servidor, para que a estação consiga contactá-lo, o que e feito através da opção "password server", como já vimos.
+
+O segundo passo é criar um arquivo com um mapa dos usuários na estação. O arquivo pode ser armazenado em qualquer pasta, mas você precisa especificar sua localização corretamente na opção "username map" do smb.conf, como em:
+username map = /etc/samba/smbusermap
+
+Este arquivo relaciona os logins cadastrados no servidor PDC com a conta cadastrada no servidor Samba local, explicando a ele como acessar os arquivos no sistema depois que o acesso é autorizado pelo PDC. Sem isso, o sistema bloqueia o acesso, já que as contas cadastradas no PDC não existem localmente.
+
+O arquivo com o username map segue uma estrutura muito simples, onde você especifica uma conta por linha, sempre seguindo a sintaxe "conta_local = nome_do_dominioconta_no_dominio", como em:
+
+joao = DOMINIOgdh
+joao = DOMINIOmaria
+joao = DOMINIOjose
+joao = DOMINIOisac
+
+Basta criar um arquivo de texto usando qualquer editor e salvá-lo, prestando atenção no uso de barras invertidas.
+
+Quando qualquer usuário especificado no arquivo é autorizado pelo PDC, o servidor Samba local realiza a leitura no sistema de arquivos utilizando a conta "joao", que é a única cadastrada localmente. Com isso, você precisa apenas manter o arquivo atualizado, sem se preocupar com com senhas. Ao administrar uma rede com várias estações, é interessante manter o SSH ativo em todas as máquinas, de forma que você possa atualizar o arquivo remotamente, quando necessário.
+
+Ao serem acessados através do ambiente de rede, os compartilhamentos das estações de trabalho Linux ficam disponíveis para as demais máquinas do domínio sem necessidade de autenticação adicional, já que a autenticação é centralizada no PDC. 
+
+
+Concluindo, caso você deseje mais tarde remover a máquina Linux do domínio, basta alterar novamente o smb.conf (na estação), mudando a linha "workgroup = ", para que ela passe a indicar o nome do grupo de trabalho (e não mais do domínio) e alterar a linha "security = domain" para "security = user", como em:
+
+---------------------------------------------------------
+[global]
+workgroup = grupo
+netbios name = M5
+security = user
+encrypt passwords = yes
+---------------------------------------------------------
+
+Depois de reiniciar o Samba (ou aguardar o tempo de atualização após a mudança no arquivo), a estação deixa o domínio e volta a fazer parte do grupo de trabalho.
+
+A principal limitação dessa configuração é que ela permite centralizar apenas a autenticação dos compartilhamentos de rede, mas não resolve o problema da autenticação local nas estações Linux, que continua sendo feita da forma tradicional. 

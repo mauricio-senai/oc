@@ -1,0 +1,3 @@
+http://www.vivaolinux.com.br/topico/Servidores-Linux-para-iniciantes/Squid-com-autenticacao-LDAP
+
+http://mkeadle.org/?p=13

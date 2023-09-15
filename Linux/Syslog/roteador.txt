@@ -1,0 +1,73 @@
+Níveis de geração de LOG do CISCO
+
+Level 	Keyword 	Description
+0 	emergencies 	System is unusable.
+1 	alerts 	Immediate action is needed.
+2 	critical 	Critical conditions exist.
+3 	errors 	Error conditions exist.
+4 	warnings 	Warning conditions exist.
+5 	notification 	Normal, but significant, conditions exist.
+6 	informational 	Informational messages.
+7 	debugging 	Debugging messages.
+
+
+No Roteador
+
+enable
+conf t
+logging on
+logging host ip_servidordelog sequence-num-session (para IPV4)
+logging host ipv6 ip_servidordelog sequence-num-session (para IPV6)
+logging trap (n° da tabela acima)
+
+
+No linux
+
+Step 1 (Opcional)
+$ vim /etc/default/rsyslog
+substituir o c5 por :
+RSYSLOGD_OPTIONS="-c4-r"
+
+
+Step 2
+
+$ vim /etc/rsyslog.conf
+
+-->Simples
+local7.* /var/log/cisco/router.log
+
+-->Nome do arquivo com nome e data
+#
+# Log from Cisco Clients
+#
+$template cisco,"/var/log/roteadores/cisco-%HOSTNAME%-%$MONTH%.log
+local7.*    -?cisco
+
+#local 7 se for nivel 7 configurado no roteador
+
+Step 3
+Configurar o gerenciamento de LOG
+
+$ vim /etc/logrotate.conf
+e adicionar
+/var/log/roteadores
+{
+	rotate 2
+	missingok
+	notifyempty
+	compress
+	nocreate
+	size 2M
+ }
+
+
+Tudo dentro da pasta roteadores vai ter a rotação acima
+  
+Step 4
+restart no rsyslog
+$ sudo service rsyslog restart  
+
+fonte
+http://www.linuxhomenetworking.com/wiki/index.php/Quick_HOWTO_:_Ap04_:_syslog_Configuration_and_Cisco_Devices#.UjcKCD9v-ih
+http://ubuntu-garage.blogspot.com.br/2010/09/ubuntu-syslog-server.html
+

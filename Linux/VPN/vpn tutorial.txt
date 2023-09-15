@@ -1,0 +1,252 @@
+Instalação
+
+
+ 
+Instalando o OpenVPN
+
+Todo ambiente foi testado na distribuição Debian Squeeze. 
+
+Em primeiro lugar, vamos atualizar o APT: 
+
+# apt-get update
+# apt-get upgrade 
+
+Agora fazemos a instalação do OpenVPN e do OpenSSL, para poder gerar os certificados. 
+
+# apt-get install openvpn openssl 
+
+Após a instalação, temos que criar uma pasta dentro da pasta "openvpn" em /etc/openvpn, chamada "easy-rsa". 
+
+Então execute: 
+
+# mkdir /etc/openvpn/easy-rsa 
+
+Agora temos que copiar todos os scripts para o diretório "openvpn" para ficar mais fácil a administração da VPN e suas chaves. 
+
+Execute 
+
+# cp -rp /usr/share/doc/openvpn/examples/easy-rsa/2.0/. /etc/openvpn/easy-rsa/ 
+
+Pronto, agora estamos prontos para configurar nossas chaves de acesso, tanto do cliente como do servidor. 
+
+O próximo passo é editar o arquivo "vars" dentro do diretório /etc/openvpn/easy-rsa/. 
+
+No final do arquivo, temos as seguintes informações: 
+
+# Don't leave any of these fields blank. 
+
+export KEY_COUNTRY="Brasil" # SEU PAIS
+export KEY_PROVINCE="Sao Paulo" # SUA CIDADE
+export KEY_CITY="Sao Paulo" # SUA CIDADE
+export KEY_ORG="Sua Empresa" # SUA EMPRESA
+export KEY_EMAIL="Seu e-mail" # O E-MAIL DO ADMINISTRADOR
+
+
+Troque estas informações pelas suas, da sua empresa no caso. 
+
+Então execute: 
+
+# nano vars 
+
+Faça as alterações, salve e saia. 
+
+Agora, dentro do diretório easy-rsa/, execute o seguinte: 
+
+# source vars 
+#./clean-all
+
+* Uma coisa muito importante antes de criar qualquer certificado novo, ou quando você alterar qualquer informação dentro desse arquivo "vars", você precisa executar esse comando, para as informações serem lidas novamente. 
+
+Por padrão, os certificados são gerados para expirar de 10 em 10 anos, muito tempo, mas se você quiser alterar este tempo, é só editar o arquivo "vars", e na opção: 
+
+# In how many days should certificates expire?
+export KEY_EXPIRE=3650 # DIAS QUE DURAM SEU CERTIFICADO
+
+
+Nesta opção você limita o número de dias que seu certificado será válido. Não esqueça de executar o comando source vars quando salvar e sair. 
+
+Agora vamos criar uma nova pasta dentro do diretório easy-rsa, chamada "keys". Nesta pasta ficarão todos os certificados criados para os clientes. 
+
+Execute: 
+
+# mkdir /etc/openvpn/easy-rsa/keys 
+
+Agora temos que criar os certificados raiz que ficará no servidor, para isso, no diretório /etc/openvpn/easy-rsa, temos o script "build-ca", entre nesse diretório: 
+
+# cd /etc/openvpn/easy-rsa 
+
+Execute o seguinte: 
+
+# ./build-ca 
+
+Saída do comando: 
+Country Name (2 letter code)
+State or Province Name (full name)
+Locality Name (eg, city) [SUACIDADE]:
+Organization Name (eg, company) 
+Organizational Unit Name (eg, section) []:
+Common Name (eg, your name or your server's hostname) []:
+Email Address [seuemail@seudominio.com.br]:
+
+
+Este script vai pedir uma série de informações sobre a sua região, é só seguir o padrão do arquivo "vars" que foi editado lá no começo. 
+
+Feito isso, dentro da pasta "keys", terão 4 arquivos:
+ca.crt
+ca.key
+index.txt
+serial
+
+Dentro do mesmo diretório "easy-rsa", temos que executar o seguinte script "build-key-server", este script será a chave do servidor, no caso, mais uma camada de segurança para seus dados. 
+
+Então execute: 
+
+# ./build-key-server NOME DO SEU SERVER 
+
+Este script vai pedir uma senha que será sempre solicitada quando o usuário for fechar a VPN, vai do seu nível de segurança colocar ou deixar em branco. 
+
+No final o script, vai perguntar se você deseja realmente assinar o certificado, se você preencheu as informações corretas pressione: y 
+Sign the certificate? [y/n]:y
+1 out of 1 certificate requests certified, commit? [y/n]y
+
+
+Agora, finalmente vamos criar as chaves de acesso para os usuários 
+
+No mesmo diretório "easy-rsa", execute o seguinte script: 
+
+# ./build-key usuariodavpn 
+
+Este certificado pedirá algumas informações, assim que informar todas as informações corretas, aperte o Y para confirmar. 
+
+Ele também pedirá uma senha, se quiser colocar, fique à vontade. 
+
+Reforçando a segurança
+
+Agora vamos reforçar a segurança da VPN. 
+
+Dentro do Diretório "easy-rsa", execute o seguinte script: 
+
+# ./build-dh 
+
+Aguarde terminar. Em seguida, vamos criar uma assinatura de uma chave secreta para a troca de informações. Então execute: 
+
+# cd /etc/openvpn/easy-rsa/keys 
+
+E depois: 
+
+# openvpn --genkey --secret chave.key 
+
+Estes 2 scripts geraram as chaves de segurança no diretório /etc/openvpn/easy-rsa/keys 
+
+Pronto, agora vamos criar o seguinte diretório: 
+
+# mkdir /etc/openvpn/keys 
+
+Dentro deste diretório, temos que copiar algumas chaves de acesso para ele, são elas:
+dh1024.pem
+ca.crt
+servervpn.crt
+servervpn.key
+chave.key
+
+Estas chaves foram criadas dentro do diretório /etc/openvpn/easy-rsa/keys, é só copiar todas para o novo diretório criado em /etc/openvpn/keys 
+
+# cp -a /etc/openvpn/easy-rsa/keys/dh1024.pem ca.crt nome_servervpn.crt nome_servervpn.key chave.key /etc/openvpn/keys/ 
+
+
+
+
+# botar arquivo server.conf em /etc/openvpn
+
+
+
+
+
+
+
+Depois salve e saia, e reinicie o servidor VPN: 
+
+# /etc/init.d/openvpn restart 
+
+Iniciar a VPN
+# openvpn --config /etc/openvpn/server.conf
+
+Se tiver algum firewall na sua rede, segue uma dica de regra para funcionar. 
+
+Esta dica peguei deste ótimo artigo, aqui no VOL mesmo:
+Artigo:Instalando e configurando openVPN no Debian Lenny
+colocar no rc.local e iniciar ele depois
+
+# iptables -t filter -A INPUT -p udp --dport 1194 -j ACCEPT
+# iptables -t filter -A FORWARD -p udp -s 192.168.0.0/24 --dport 1194 -j ACCEPT
+# iptables -t filter -A FORWARD -p udp -d 192.168.0.0/24 --sport 1194 -j ACCEPT
+# iptables -t nat -A POSTROUTING -s 192.168.0.0/24 -d 10.0.0.0/24 -j ACCEPT
+# iptables -t nat -A POSTROUTING -d 192.168.0.0/24 -s 10.0.0.0/24 -j ACCEPT
+# iptables -t nat -I POSTROUTING -s 10.0.0.0/24 -o eth1 -j MASQUERADE 
+
+Esta opção que está no arquivo server.conf, "comp-lzo", serve para a VPN passar a compactar os dados transmitidos através do túnel, só que para isso funcionar, temos que instalar o pacote lzop. 
+
+Então execute: 
+
+# apt-get install lzop 
+
+Ou: 
+
+# aptitude install lzop 
+
+
+Configurando o cliente Windows
+
+Tanto para clientes XP como Windows 7, o artigo funciona. 
+
+Primeiro, temos que fazer o download do software em:
+http://www.openvpn.net/release/openvpn-2.1.3-install.exe
+
+Feito o download, vamos fazer a instalação dele no cliente, instalação padrão: 
+
+Instalação normal > next > I Agree > next > Install > next > finish 
+
+Dentro do diretório C:\Program Files\OpenVPN\config, criamos a pasta "keys". 
+
+Dentro da pasta "Keys", temos que copiar as chaves de acesso para o cliente que fica no servidor no diretório /etc/openvpn/easy-rsa/keys 
+
+Os arquivos são:
+dh1024.pem
+ca.crt
+usuariodavpn.crt
+usuariodavpn.key
+chave.key
+
+Agora, no diretório C:\Program Files\OpenVPN\config, temos que criar um arquivos no bloco de notas mesmo, chamado "client". 
+
+Dentro desse arquivo, tem que ter as seguintes linhas: 
+
+Salve e feche o arquivo. 
+
+* Agora vem o MAIS IMPORTANTE: Você deve salvar este arquivo com a seguinte extensão: .ovpn 
+
+Então, o arquivo ficaria nomeado assim depois de salvo: cliente.ovpn 
+
+Se não for feito isso, a VPN não funciona. 
+
+Agora, para testar suas chaves, faça o seguinte procedimento:
+Na sua área de trabalho terá um ícone chamado OpenVPN GUI, execute ele.
+Do lado do seu relógio aparecerá o mesmo ícone, só que em vermelho, clique com o botão direito e vá em "Conectar", se você fez tudo certo, os computadores ficaram verdes, com o status "Connected".
+
+Pronto, sua VPN está funcionando. 
+
+* Dica: Evite usar nomes de acesso na sua VPN, pois isso demora muito, por causa da resposta do servidor DNS. Tente sempre usar o numero IP. 
+
+Ex.: se você for acessar um servidor que está na sua rede e ele ter o nome de "servidor", ao invés de você acessar ele como "servidor", acesse pelo seu IP. ;) 
+
+Referências
+
+Instalando e configurando openVPN no Debian Lenny
+Livro: Servidores Linux - Guia prático
+
+Agradeço a todos meus amigos que sempre ajudaram em minha carreira! 
+
+Em especial: 
+
+Thiago Sousa Messias Gonçalves
+William Sousa Messias Gonçalves 

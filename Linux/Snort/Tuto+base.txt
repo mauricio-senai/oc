@@ -1,0 +1,101 @@
+# aptitude install snort-mysql mysql-server libpcap-dev apache2 ssl-cert php5 libphp-adodb php5-gd php-pear
+
+Base de Dados
+Vamos criar o banco de dados e o usuário para acessá-lo:
+# mysql -u root -p
+Já no shell do MySQL:
+> CREATE DATABASE snort;
+> GRANT all privileges ON snort.* TO snort@localhost IDENTIFIED BY 'senha_snort_mysql';
+> flush privileges;
+> quit
+
+Criar as tabelas no DB
+# zcat /usr/share/doc/snort-mysql/create_mysql.gz | mysql -u snort -h localhost -p snort
+
+Configurar o snort no DB
+# dpkg-reconfigure snort-mysql 
+	(Quando pedir as redes colocar ”127.0.0.0/16,192.168.0.0/24”)
+	(Nome da maquina botar 127.0.0.1)
+
+
+Criar as Regras
+# cd /etc/snort/
+
+# nano rules/icmp.rules
+    Comentar todas as linhas de regras que não serão utilizadas e
+	adicionar uma copia modificada da ultima linha ( dsize:800 )
+
+		{ alert icmp any any -> any any (msg:"ICMP Large ICMP Packet"; dsize:>650; sid:499; rev:4;)
+			}
+
+# nano snort.conf
+	Novamente comentar todas as regras não utilizadas
+		Somente não descomentar a linha 586 "include $RULE_PATH/icmp.rules"
+
+# service snort restart
+
+#########################################################################################
+
+Configurar o Base
+
+Criar o SSL
+# make-ssl-cert /usr/share/ssl-cert/ssleay.cnf /etc/apache2/apache.pem
+# chmod 660 /etc/apache2/apache.pem
+# a2enmod ssl
+
+--> Criar um site com ssl no /etc/apache2/sites-available/default
+
+<VirtualHost *:443>
+#       ServerName www.base.com
+        DocumentRoot /var/www/base
+        SSLEngine on
+        ServerSignature On
+        SSLCertificateFile /etc/apache2/apache.pem
+</VirtualHost>
+
+
+Para o PHP
+# nano /etc/php5/apache2/php.ini
+
+Altere para:
+para achar essa linha da ctrl + w error_reporting
+
+error_reporting = E_ALL & ~E_NOTICE
+
+
+Baixar e instalar o BASE
+# wget http://sourceforge.net/projects/secureideas/files/BASE/base-1.4.5/base-1.4.5.tar.gz
+# tar -zxf base-1.4.5.tar.gz
+# cp -r base-1.4.5 /var/www/base
+# chown -R www-data.www-data /var/www/base
+# chmod -R 770 /var/www/base 
+pear config-set preferred_state alpha
+pear install Image_Color Image_Canvas Image_Graph 
+
+Reiniciar o Apache2
+# /etc/init.d/apache2 force-reload
+
+Acesse o seguinte endereço através do seu navegador: https://<ip do servidor>/base
+
+Clique em next e escolha português.
+
+Altere os seguintes campos:
+
+Caminho para adodb: /usr/share/php/adodb
+
+Nome da base de dados: snort
+Nome do host: localhost
+Porta da base de dados: <deixe em branco - porta padrão>
+Nome do usuário da base de dados: snort
+Senha do usuário da base de dados: mypass
+
+Clique em concluir.
+
+Clique em "criar baseag".
+
+Será aberto o base com os dados dos alertas já gerados. Divirta-se.
+
+
+## Para Testar ##
+
+# ping 10.0.1.34 -s 800

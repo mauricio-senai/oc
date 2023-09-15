@@ -1,0 +1,93 @@
+#mkdir /etc/openvpn/easy-rsa
+#cp -R /usr/share/doc/easy-rsa/examples/2.0/* /etc/openvpn/easy-rsa
+#cp -R /usr/share/doc/easy-rsa/examples/sample-config-files/server.conf.gzip /etc/openvpn
+#cd /etc/openvpn/easy-rsa && nano vars
+
+### Colocar os parametros BR, RS etc no final do arquivo. Deixando s? os 5 primeiros.
+
+#source vars
+#./clean-all
+#build-dh
+
+#./pkitool --initca
+#./pkitool --server server
+#./pkitool client
+#cd keys/
+#cp -a server.crt server.key dh1024.pem ca.crt /etc/openvpn
+#cp -a client.crt client.key  ca.crt /home/usuario //copiar certificado e key para pasta dos 
+#### usuarios que ser?o autenticados
+#useradd -m -s /bin/false usuario
+#gunzip /etc/openvpn/server.conf.gzip
+#nano /etc/openvpn/server.conf
+
+#### Descomentar as linhas
+
+push "redirect-gateway def1 bypass-dhcp"
+push "dhcp-option DNS ip_dns"
+client-to-client
+duplicate-cn
+
+
+#### copiar os arquivos client.crt, client.key e ca.crt para o arquivos de programa/openvpn/config
+
+#### Nessa mesma pasta copiar o sample do client.ovpn pra ela e editar
+
+#### Descomentar e editar as linhas
+client
+dev-tun
+proto udp
+remote my server pra remote 192.168.1.1 1194
+persist-key
+persist-tun
+comp-lzo
+verb3
+
+#### acrescentar a linha
+auth-user-pass
+
+
+#### MODO BRIDGE	
+
+#### Intalar o Bridge-utils
+apt-get install bridge-utils
+#### Copiar o arquivo /usr/share/doc/openvpn/examples/simple-config-files/bridge-start e bridge-stop para a pasta /etc/openvpn
+
+#### Alterar os valores das variáveis no arquivo  bridge-start:
+
+Setting				bridge-start parameter	Value
+Ethernet Interface		eth			eth0
+Local IP Address		ip			192.168.8.4(ip_interno)
+Local Netmask			eth_netmask		255.255.255.0
+Local Broadcast Address		eth_broadcast		192.168.8.255
+VPN client address pool					192.168.8.128 to 192.168.8.254
+Virtual Bridge Interface	br			br0
+Virtual TAP Interface		tap			tap0
+
+#### editar arquivo server.conf
+- dev-tun comenta e bota dev tap0
+#### comentar  -> server 10.8.0.0 255.255.255.0
+- Server bridge IP_interno_linux netmask_interna range_inicio_adistribuir range_final_a_distribuir 
+
+#### no client.conf
+#### mudar dev tun pra dev tap
+----------------------------------------
+#### No rc.local colocar a sequencia de start do VPN
+service openvpn stop
+/etc/openvpn/bridge-start
+service openvpn start
+
+----------------------------------------
+#### Se tiver firewall tem que liberar
+iptables -A INPUT -i tap0 -j ACCEPT
+iptables -A INPUT -i br0 -j ACCEPT
+iptables -A FORWARD -i br0 -j ACCEPT
+----------------------------------------
+
+#### Cliente linux vpn
+#apt-get install openvpn
+#cp /usr/share/doc/openvpn/example/sample-config-files/client.conf /etc/openvpn/client.ovpn
+#### editar que nem no arquivo mais pra cima.
+#scp root@ip_servidor:/etc/openvpn/client.crt(depois client.key e ca.crt) /etc/openvpn
+
+#### iniciar vpn client
+openvpn --config /etc/openvpn/client.ovpn

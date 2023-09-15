@@ -1,0 +1,23 @@
+# aptitude install snort
+
+# cd /etc/snor/
+
+# nano rules/icmp.rules
+    Comentar todas as linhas de regras que não serão utilizadas e
+	adicionar uma copia modificada da ultima linha ( dsize:800 )
+
+		{ alert icmp any any -> any any (msg:"ICMP Large ICMP Packet"; dsize:>650; sid:499; rev:4;)
+			}
+
+# nano snort.conf
+	Novamente comentar todas as regras não utilizadas
+		Somente não descomentar a linha 586 "include $RULE_PATH/icmp.rules"
+
+
+# service snort restart
+
+
+
+## Para Testar ##
+
+# ping 10.0.1.34 -s 800

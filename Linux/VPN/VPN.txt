@@ -1,0 +1,4 @@
+VPN
+
+http://www.vivaolinux.com.br/artigo/OpenVPN-para-clientes-Windows-no-Debian-Squeeze
+http://www.devmedia.com.br/montando-uma-vpn-com-o-openvpn/26670

@@ -1,0 +1,45 @@
+MODO BRIDGE	
+(OBS.: Cada vlan estará em uma interface eth diferente e não em sub-interfaces de uma mesma eth)
+Intalar o Bridge-utils
+apt-get install bridge-utils
+Copiar o arquivo /usr/share/doc/openvpn/examples/sample-scripts/bridge-start e bridge-stop para a pasta /etc/openvpn
+
+Alterar os valores das variáveis no arquivo  bridge-start:
+
+Setting			bridge-start parameter	Value
+Virtual Bridge Interface	br				br0
+Virtual TAP Interface		tap				tap0
+Ethernet Interface	eth					eth0
+Local IP Address		ip			192.168.8.4(ip_interno)
+Local Netmask		eth_netmask		255.255.255.0
+Local Broadcast Address	eth_broadcast	192.168.8.255
+VPN client address pool		192.168.8.128 to 192.168.8.254
+
+editar arquivo server.conf
+- dev-tun comenta e bota dev tap0
+comentar  -> server 10.8.0.0 255.255.255.0
+- Server bridge IP_interno_linux netmask_interna range_inicio_adistribuir range_final_a_distribuir 
+
+no client.conf
+mudar dev tun pra dev tap
+----------------------------------------
+No rc.local do serveridor colocar a sequencia de start do VPN
+service openvpn stop
+/etc/openvpn/bridge-start
+service openvpn start
+
+----------------------------------------
+Se tiver firewall tem que liberar
+iptables -A INPUT -i tap0 -j ACCEPT
+iptables -A INPUT -i br0 -j ACCEPT
+iptables -A FORWARD -i br0 -j ACCEPT
+----------------------------------------
+
+Cliente linux vpn
+#apt-get install openvpn
+#cp /usr/share/doc/openvpn/example/sample-config-files/client.conf /etc/openvpn/client.ovpn
+editar que nem no arquivo mais pra cima.
+#scp root@ip_servidor:/etc/openvpn/client.crt(depois client.key e ca.crt) /etc/openvpn
+
+iniciar vpn client
+openvpn --config /etc/openvpn/client.ovpn

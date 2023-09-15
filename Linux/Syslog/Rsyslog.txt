@@ -1,0 +1,12 @@
+apache2
+php7.0
+libapache2-mod-php
+mysql-server
+rsyslog
+rsyslog-mysql
+
+
+https://yallalabs.com/linux/how-to-setup-loganalyzer-with-rsyslog-on-ubuntu-16-04-lts-ubuntu-18-04-lts/
+
+https://www.server-world.info/en/note?os=Ubuntu_16.04&p=rsyslog&f=2
+https://fedingo.com/how-to-setup-rsyslog-with-mysql/

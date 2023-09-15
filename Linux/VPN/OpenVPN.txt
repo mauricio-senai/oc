@@ -1,0 +1,7 @@
+no cliente 
+client.conf
+
+comentar a linha 103
+
+# ns-cert-type server
+

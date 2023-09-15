@@ -1,0 +1,3 @@
+apt-get install apache2 libapache2-mod-php5 libwww-perl mysql-server mysql-common mysql-client php5-mysql libnet1 libnet1-dev libpcre3 libpcre3-dev libcrypt-ssleay-perl libmysqlclient-dev php5-gd php-pear autoconf libphp-adodb php5-cli libtool libssl-dev gcc-4.4 g++ automake gcc make flex bison apache2-doc ca-certificates
+
+http://infosegura.eti.br/tutoriais/SAMSB.pdf 

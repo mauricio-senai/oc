@@ -1,0 +1,32 @@
+# aptitude install tripwire (botar tudo em sim e botar os passwords)
+
+editar o arquivo #nano /etc/tripware/twpol.txt
+
+
+Apagar todos os comentarios das linha de cima e deixar apartir de section global e depois apagar tudo abaixo de sig_hi = 100 ou seja o binaries pra frente e acrescentar os diretorios que pede pra ele analisar conforme abaixo
+
+
+Após variaveis de configuração adicionar: [ HIGH - MED - LOW ]
+
+(
+  rulename = "Sites do Debian", #Nome que vai aparecer no log
+  severity = $(SIG_MED) #Nivel de mudança dos arquivos, critical medio
+)
+{
+        /var/www/                       -> $(SEC_CONFIG) ;
+}
+
+
+/var/www diretorio e sec config é o tipo de arquivo a ser analisado
+
+# /usr/sbin/twadmin -m P /etc/tripwire/twpol.txt 
+# /usr/sbin/tripwire -m i
+
+O primeiro verifica se o arquivo esta certo e o segundo comando gera a base de dados
+
+# tripwire --check # vai analisar o arquivo e gerar um relatorio
+
+# tripwire -m u -Z low -r /var/lib/tripwire/report/nome_do_server-timestamp.twr 
+esse comando é pra ver os relatorios
+
+o diretorio /var/lib/tripwire/report/ é onde vai estar os relatorios que foi gerado com o nome da maquina e a data.

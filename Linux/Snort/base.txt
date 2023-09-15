@@ -1,0 +1,63 @@
+Configurando o Base
+
+# cp /etc/apache2/sites-available/default-ssl /etc/apache2/sites-enabled
+# vi /etc/php5/apache2/php.ini
+
+Altere para:
+para achar essa linha da ctrl + w error_reporting
+
+error_reporting = E_ALL & ~E_NOTICE 
+
+
+
+mkdir /etc/apache2/ssl
+Agora, utilizando o make-ssl-certe o modelo no arquivo ssleay.cnf vamos criar o certificado armazenando-o no arquivo 
+apache.pem: 
+# make-ssl-cert /usr/share/ssl-cert/ssleay.cnf /etc/apache2/ssl/apache.pem
+#chmod 660 /etc/apache2/ssl/apache.pem
+#a2enmod ssl
+
+# wget http://sourceforge.net/projects/secureideas/files/BASE/base-1.4.5/base-1.4.5.tar.gz
+# tar -zxf base-1.4.5.tar.gz
+# cp -r base-1.4.5 /var/www/base
+# chown -R www-data.www-data /var/www/base
+# chmod -R 770 /var/www/base 
+# pear config-set preferred_state alpha
+# pear install Image_Color Image_Canvas Image_Graph #demora pra cacete
+#nano /etc/apache2/sites-enable/000-default
+acrescentar 
+SSLEngine on 
+ServerSignature On 
+SSLCertificateFile /etc/apache2/ssl/apache.pem
+
+a2ensite 000-default
+
+
+# /etc/init.d/apache2 restart 
+
+
+
+Acesse o seguinte endereço através do seu navegador: https://<ip do servidor>/base
+
+Clique em next e escolha português.
+
+Altere os seguintes campos:
+
+Caminho para adodb: /usr/share/php/adodb
+Nome da base de dados: snort
+Nome do host: localhost
+Porta da base de dados: <deixe em branco - porta padrão>
+Nome do usuário da base de dados: snort
+Senha do usuário da base de dados: mypass
+
+Clique em concluir.
+
+Clique em "criar baseag".
+
+Será aberto o base com os dados dos alertas já gerados. Divirta-se. 
+
+
+http://www.vivaolinux.com.br/artigo/Instalacao-e-configuracao-do-Snort-Inline-%28modo-IPS%29-Baynard2-Mysql-e-PulledPork-no-Debian-Squeeze?pagina=1]
+
+
+http://www.vivaolinux.com.br/artigo/Debian-Sarge-+-Snort-+-MySQL-+-Acidlab-+-Apache?pagina=3

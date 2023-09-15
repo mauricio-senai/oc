@@ -1,0 +1,67 @@
+http://openmaniak.com/quagga_tutorial.php
+
+http://opensourcecentre.wordpress.com/article/install-quagga-as-linux-router/
+
+http://www.aprigiosimoes.com.br/2010/01/14/quaggazebra-roteamento-avancado-linux/
+
+
+
+apt-get install quagga quagga-doc
+#vim /etc/quagga/daemons
+zebra=yes
+bgpd=no
+ospfd=yes
+ospf6d=no
+ripd=no
+ripngd=no
+
+
+
+#/etc/init.d/quagga start
+
+#cp /usr/share/doc/quagga/examples/zebra.conf.sample /etc/quagga/zebra.conf
+#cp /usr/share/doc/quagga/examples/ospfd.conf.sample /etc/quagga/ospfd.conf 
+
+permissões
+
+#chown quagga.quaggavty /etc/quagga/*.conf
+#chmod 640 /etc/quagga/*.conf  
+
+nano /etc/quagga/zebra.conf adicionar
+ hostname unixrouter
+password zebra
+enable password zebra
+log file /var/log/quagga/zebra.log 
+
+restartar o quagga
+
+# telnet 127.0.0.1 zebra -> configurar ips das interfaces eth0 e eth1 -> mesmo da 
+unixrouter# conf t
+unixrouter(config)# interface eth1 -> e dps a eth1
+unixrouter(config-if)# ip address 192.168.0.0/24
+unixrouter(config-if)# quit
+unixrouter(config)# interface eth0 
+unixrouter(config-if)# ip address 10.0.200.120/16 
+unixrouter(config-if)# quit
+unixrouter(config)# write
+Configuration saved to /etc/quagga/zebra.conf
+unixrouter(config)# exit
+
+
+
+ # telnet 127.0.0.1 ospfd -> configurar as rotas ospf
+
+unixrouter# conf t
+unixrouter(config)# router ospf
+unixrouter(config-router)# redistribute connected
+unixrouter(config-router)# redistribute static
+unixrouter(config-router)# network 192.168.0.0/30 area 0
+unixrouter(config-router)# network 10.0.0.0/16 area 0
+unixrouter(config-router)# write
+Configuration saved to /etc/quagga/ospfd.conf
+unixrouter(config-router)# exit
+unixrouter(config)# exit
+
+
+configurar ospf no roteador e ja eras
+OBS: o tutorial original diz que no ospf é area o.o.o.o caso de errado tente isso :B

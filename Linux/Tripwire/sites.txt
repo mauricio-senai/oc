@@ -1,0 +1,7 @@
+2010: http://penguinapple.blogspot.com.br/2010/12/installing-configuring-and-using.html
+
+2006: http://www.linuxjournal.com/article/8758?page=0,0
+
+http://ricardosimoes.com/docs/arl/cripto.pdf
+
+http://netwizards.co.uk/installing-tripwire-on-ubuntu/
